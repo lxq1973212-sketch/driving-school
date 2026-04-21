@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>双安驾校</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; min-height: 100vh; }
@@ -87,12 +88,6 @@
     .share-platform:hover { background: #f0f1f5; transform: translateY(-2px); }
     .share-platform-icon { font-size: 3rem; margin-bottom: 10px; }
     .share-platform-name { font-size: 1rem; color: #666; font-weight: 500; }
-    .share-platform.wechat { background: #07c160; color: white; }
-    .share-platform.wechat:hover { background: #06ad56; }
-    .share-platform.wechat .share-platform-name { color: white; }
-    .share-platform.qq { background: #12b7f5; color: white; }
-    .share-platform.qq:hover { background: #0fa8e0; }
-    .share-platform.qq .share-platform-name { color: white; }
     .share-platform.copy { background: #f5f5f5; }
     .share-close { color: #999; font-size: 0.9rem; cursor: pointer; padding: 12px; }
     
@@ -185,38 +180,48 @@
       <div class="share-close" onclick="closeShareModal()">取消</div>
     </div>
   </div>
+  
   <script>
-    const API = '';
+    const SUPABASE_URL = 'https://iinoqavrthukxojfalnu.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpbm9xYXZydGh1a3hvamZhbG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjY0MTAsImV4cCI6MjA1OTYwMjQxMH0.Jq24eiXI64MOA4067GVfA_X_8sQLbI';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
     const moduleColors = ['red', 'orange', 'blue', 'purple', 'green'];
     let schoolName = '双安驾校';
     
     async function loadData() {
       try {
-        const res = await fetch(`${API}/api/data`);
-        const data = await res.json();
+        const [noticesRes, modulesRes, schoolRes] = await Promise.all([
+          supabase.from('notices').select('*').order('date', { ascending: false }),
+          supabase.from('modules').select('*'),
+          supabase.from('school').select('*').eq('id', 'config').single()
+        ]);
         
-        if (data.school) {
-          if (data.school.name) {
-            schoolName = data.school.name;
-            document.getElementById('schoolName').textContent = schoolName;
-            document.title = schoolName;
-          }
-          if (data.school.logo) {
-            document.getElementById('schoolLogo').src = data.school.logo;
-            document.getElementById('schoolLogo').style.display = 'block';
-          }
-          if (data.school.phone) {
-            document.getElementById('phoneNum').textContent = data.school.phone;
-            document.getElementById('schoolPhone').style.display = 'flex';
-          }
-          if (data.school.address) {
-            document.getElementById('addressValue').textContent = data.school.address;
-            document.getElementById('infoCard').style.display = 'block';
-          }
+        const notices = noticesRes.data || [];
+        const modules = modulesRes.data || [];
+        const school = schoolRes.data || {};
+        
+        if (school.name) {
+          schoolName = school.name;
+          document.getElementById('schoolName').textContent = schoolName;
+          document.title = schoolName;
+        }
+        if (school.logo) {
+          document.getElementById('schoolLogo').src = school.logo;
+          document.getElementById('schoolLogo').style.display = 'block';
+        }
+        if (school.phone) {
+          document.getElementById('phoneNum').textContent = school.phone;
+          document.getElementById('schoolPhone').style.display = 'flex';
+        }
+        if (school.address) {
+          document.getElementById('addressValue').textContent = school.address;
+          document.getElementById('infoCard').style.display = 'block';
         }
         
-        renderNoticeBanner(data.notices || []);
-        renderModules(data.modules || []);
+        renderNoticeBanner(notices);
+        renderModules(modules);
       } catch (err) {
         console.log('加载数据失败');
         renderModules([]);
@@ -359,20 +364,14 @@
       btn.textContent = '提交中...';
       
       try {
-        const res = await fetch(`${API}/api/students`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, phone, idCard })
-        });
+        const { error } = await supabase.from('students').insert([{ name, phone, id_card: idCard }]);
         
-        if (res.ok) {
-          document.getElementById('successModal').classList.add('active');
-          document.getElementById('signupForm').reset();
-        } else {
-          alert('提交失败，请稍后重试');
-        }
+        if (error) throw error;
+        
+        document.getElementById('successModal').classList.add('active');
+        document.getElementById('signupForm').reset();
       } catch (err) {
-        alert('网络错误，请检查网络连接');
+        alert('提交失败，请稍后重试');
       }
       
       btn.disabled = false;
