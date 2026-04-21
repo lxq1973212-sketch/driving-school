@@ -1,146 +1,306 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>模块详情</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; min-height: 100vh; }
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    
-    .back-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-    .back-btn { background: white; color: #333; border: none; padding: 10px 16px; border-radius: 10px; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 4px; }
-    .back-btn:hover { background: #f8f9fa; }
-    
-    .header { background: linear-gradient(135deg, #2ecc71, #27ae60); border-radius: 20px; padding: 30px 20px; text-align: center; color: white; margin-bottom: 20px; position: relative; overflow: hidden; }
-    .header::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-    .header::after { content: ''; position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-    .module-icon { font-size: 4rem; margin-bottom: 12px; }
-    .module-name { font-size: 1.8rem; font-weight: bold; }
-    .module-count { font-size: 0.95rem; opacity: 0.9; margin-top: 6px; }
-    
-    .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-    .card-title { font-size: 1.2rem; font-weight: 600; color: #333; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    
-    .link-list { list-style: none; }
-    .link-item { padding: 16px; background: #f8f9fa; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
-    .link-item:hover { background: #f0f1f5; transform: translateX(4px); }
-    .link-item a { flex: 1; color: #2c3e50; text-decoration: none; font-size: 1rem; display: flex; align-items: center; gap: 10px; overflow: hidden; }
-    .link-item a span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .link-item .arrow { color: #bbb; font-size: 1.2rem; }
-    
-    .link-item.empty { justify-content: center; color: #999; font-size: 0.95rem; background: none; border: 2px dashed #ddd; cursor: default; }
-    .link-item.empty:hover { background: #f8f9fa; transform: none; }
-    
-    .empty-state { text-align: center; color: #999; padding: 30px; font-size: 0.95rem; }
-    
-    .loading { text-align: center; color: #999; padding: 40px; }
-    
-    .footer-tip { text-align: center; color: #999; font-size: 0.85rem; padding: 20px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>服务详情 - 双安驾校</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background: #f5f5f5; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; padding-bottom: 40px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; color: #1890ff; font-size: 14px; text-decoration: none; margin-bottom: 16px; }
+        .back-btn svg { width: 16px; height: 16px; }
+        .detail-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 16px; }
+        .detail-header { padding: 20px; border-bottom: 1px solid #f0f0f0; }
+        .detail-title { font-size: 18px; font-weight: 600; color: #333; line-height: 1.5; }
+        .detail-meta { display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: #999; }
+        .detail-body { padding: 20px; }
+        .detail-content { font-size: 14px; color: #666; line-height: 1.8; }
+        .detail-content p { margin-bottom: 16px; }
+        .detail-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; }
+        .price-tag { display: inline-block; padding: 4px 12px; background: #fffbe6; color: #fa8c16; font-size: 14px; font-weight: bold; border-radius: 4px; }
+        .cta-section { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 20px; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
+        .cta-btn { display: block; width: 100%; padding: 14px; font-size: 16px; font-weight: 500; color: white; background: linear-gradient(135deg, #1890ff 0%, #0050b3 100%); border: none; border-radius: 8px; cursor: pointer; text-align: center; text-decoration: none; }
+        .loading { text-align: center; padding: 60px 20px; color: #999; }
+        .error-page { text-align: center; padding: 60px 20px; }
+        .error-page h2 { font-size: 18px; color: #333; margin-bottom: 12px; }
+        .error-page p { font-size: 14px; color: #999; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="back-bar">
-      <button class="back-btn" onclick="history.back()">← 返回首页</button>
+    <div class="container" id="content">
+        <div class="loading">加载中...</div>
     </div>
-    
-    <div class="header">
-      <div class="module-icon" id="moduleIcon">📁</div>
-      <div class="module-name" id="moduleName">加载中...</div>
-      <div class="module-count" id="moduleCount">-</div>
+
+    <div class="cta-section" id="ctaSection" style="display:none;">
+        <a href="home.html" class="cta-btn">立即报名</a>
     </div>
-    
-    <div class="card">
-      <div class="card-title">🔗 精选内容</div>
-      <ul class="link-list" id="linkList">
-        <li class="loading">加载中...</li>
-      </ul>
-    </div>
-    
-    <div class="footer-tip">更多内容持续更新中...</div>
-  </div>
-  
-  <script>
-    const SUPABASE_URL = 'https://iinoqavrthukxojfalnu.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpbm9xYXZydGh1a3hvamZhbG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTgzNTYsImV4cCI6MjA5MjMzNDM1Nn0.iI_F4zARSfs9YpcFItw-X6gJPGe2eMK54K_xVRq0pBg';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const moduleId = urlParams.get('id');
-    
-    const defaultModules = {
-      'subject2': { name: '科目二', icon: '🚗', desc: '考试技巧与要点' },
-      'subject3': { name: '科目三', icon: '🛣️', desc: '路考要点详解' },
-      'video': { name: '免费影视', icon: '🎬', desc: '海量高清资源' },
-      'music': { name: '免费音乐', icon: '🎵', desc: '无损音质享受' }
-    };
-    
-    async function loadModule() {
-      if (!moduleId) {
-        document.getElementById('linkList').innerHTML = '<li class="empty-state">无效的模块</li>';
-        return;
-      }
-      
-      try {
-        const { data, error } = await supabase.from('modules').select('*').eq('id', moduleId).single();
-        
-        if (error || !data) {
-          renderDefaultModule();
-        } else {
-          renderModule(data);
+
+    <script>
+        const SUPABASE_URL = 'https://iinoqavrthukxojfalnu.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpbm9xYXZydGh1a3hvamZhbG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTgzNTYsImV4cCI6MjA5MjMzNDM1Nn0.iI_F4zARSfs9YpcFItw-X6gJPGe2eMK54K_xVRq0pBg';
+
+        let sb;
+
+        async function initSupabase() {
+            try {
+                const { createClient } = supabase;
+                sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+                await loadServiceDetail();
+            } catch (error) {
+                console.error('初始化失败:', error);
+                showError();
+            }
         }
-      } catch (err) {
-        renderDefaultModule();
-      }
-    }
-    
-    function renderModule(module) {
-      document.getElementById('moduleName').textContent = module.name || '未知模块';
-      document.getElementById('moduleIcon').textContent = module.icon || '📁';
-      document.getElementById('moduleCount').textContent = `${module.links ? module.links.length : 0} 个精选内容`;
-      document.title = module.name + ' - 双安驾校';
-      
-      const list = document.getElementById('linkList');
-      const links = module.links || [];
-      
-      if (links.length === 0) {
-        list.innerHTML = `
-          <li class="link-item empty">
-            <span>暂无内容，管理员正在添加中...</span>
-          </li>
-        `;
-        return;
-      }
-      
-      list.innerHTML = links.map(link => `
-        <li class="link-item">
-          <a href="${link.url}" target="_blank">
-            <span>${link.name}</span>
-            <span class="arrow">↗</span>
-          </a>
-        </li>
-      `).join('');
-    }
-    
-    function renderDefaultModule() {
-      const defaultModule = defaultModules[moduleId] || { name: '未知模块', icon: '📁', desc: '' };
-      
-      document.getElementById('moduleName').textContent = defaultModule.name;
-      document.getElementById('moduleIcon').textContent = defaultModule.icon;
-      document.getElementById('moduleCount').textContent = defaultModule.desc;
-      document.title = defaultModule.name + ' - 双安驾校';
-      
-      document.getElementById('linkList').innerHTML = `
-        <li class="link-item empty">
-          <span>暂无内容，管理员正在添加中...</span>
-        </li>
-      `;
-    }
-    
-    loadModule();
-  </script>
+
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        async function loadServiceDetail() {
+            const id = getQueryParam('id');
+            if (!id) {
+                showError();
+                return;
+            }
+
+            try {
+                const { data, error } = await sb
+                    .from('services')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error || !data) {
+                    showError();
+                    return;
+                }
+
+                renderDetail(data);
+            } catch (error) {
+                console.error('加载失败:', error);
+                showError();
+            }
+        }
+
+        function renderDetail(data) {
+            const createdDate = new Date(data.created_at).toLocaleDateString('zh-CN');
+            
+            document.getElementById('content').innerHTML = `
+                <a href="home.html" class="back-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                    返回首页
+                </a>
+                <div class="detail-card">
+                    <div class="detail-header">
+                        <div class="detail-title">${escapeHtml(data.title)}</div>
+                        <div class="detail-meta">
+                            <span>更新于 ${createdDate}</span>
+                            ${data.price ? `<span class="price-tag">¥${data.price}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="detail-body">
+                        <div class="detail-content">${formatContent(data.content)}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('ctaSection').style.display = 'block';
+        }
+
+        function showError() {
+            document.getElementById('content').innerHTML = `
+                <div class="error-page">
+                    <h2>内容加载失败</h2>
+                    <p>请稍后重试或返回首页</p>
+                    <a href="home.html" class="back-btn" style="margin-top:16px;">返回首页</a>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatContent(content) {
+            if (!content) return '';
+            return content
+                .split('\n')
+                .filter(line => line.trim())
+                .map(line => `<p>${escapeHtml(line)}</p>`)
+                .join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', initSupabase);
+    </script>
+</body>
+</html>
+现在您需要把三个文件的新代码复制到 GitHub：
+
+文件	GitHub 编辑链接
+index.html	https
+04-21 21:54:55
+page.html给我这个代码
+
+04-21 21:54:59
+思考
+用户已经创建了 Gist 并添加了 home.html，现在需要 page.html 的代码。让我提供完整的 page.html 代码。
+04-21 21:55:28
+以下是 page.html 的完整代码：
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>服务详情 - 双安驾校</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background: #f5f5f5; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; padding-bottom: 40px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; color: #1890ff; font-size: 14px; text-decoration: none; margin-bottom: 16px; }
+        .back-btn svg { width: 16px; height: 16px; }
+        .detail-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 16px; }
+        .detail-header { padding: 20px; border-bottom: 1px solid #f0f0f0; }
+        .detail-title { font-size: 18px; font-weight: 600; color: #333; line-height: 1.5; }
+        .detail-meta { display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: #999; }
+        .detail-body { padding: 20px; }
+        .detail-content { font-size: 14px; color: #666; line-height: 1.8; }
+        .detail-content p { margin-bottom: 16px; }
+        .detail-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; }
+        .price-tag { display: inline-block; padding: 4px 12px; background: #fffbe6; color: #fa8c16; font-size: 14px; font-weight: bold; border-radius: 4px; }
+        .cta-section { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 20px; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
+        .cta-btn { display: block; width: 100%; padding: 14px; font-size: 16px; font-weight: 500; color: white; background: linear-gradient(135deg, #1890ff 0%, #0050b3 100%); border: none; border-radius: 8px; cursor: pointer; text-align: center; text-decoration: none; }
+        .loading { text-align: center; padding: 60px 20px; color: #999; }
+        .error-page { text-align: center; padding: 60px 20px; }
+        .error-page h2 { font-size: 18px; color: #333; margin-bottom: 12px; }
+        .error-page p { font-size: 14px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container" id="content">
+        <div class="loading">加载中...</div>
+    </div>
+
+    <div class="cta-section" id="ctaSection" style="display:none;">
+        <a href="home.html" class="cta-btn">立即报名</a>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://iinoqavrthukxojfalnu.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpbm9xYXZydGh1a3hvamZhbG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTgzNTYsImV4cCI6MjA5MjMzNDM1Nn0.iI_F4zARSfs9YpcFItw-X6gJPGe2eMK54K_xVRq0pBg';
+
+        let sb;
+
+        async function initSupabase() {
+            try {
+                const { createClient } = supabase;
+                sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+                await loadServiceDetail();
+            } catch (error) {
+                console.error('初始化失败:', error);
+                showError();
+            }
+        }
+
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        async function loadServiceDetail() {
+            const id = getQueryParam('id');
+            if (!id) {
+                showError();
+                return;
+            }
+
+            try {
+                const { data, error } = await sb
+                    .from('services')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error || !data) {
+                    showError();
+                    return;
+                }
+
+                renderDetail(data);
+            } catch (error) {
+                console.error('加载失败:', error);
+                showError();
+            }
+        }
+
+        function renderDetail(data) {
+            const createdDate = new Date(data.created_at).toLocaleDateString('zh-CN');
+            
+            document.getElementById('content').innerHTML = `
+                <a href="home.html" class="back-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                    返回首页
+                </a>
+                <div class="detail-card">
+                    <div class="detail-header">
+                        <div class="detail-title">${escapeHtml(data.title)}</div>
+                        <div class="detail-meta">
+                            <span>更新于 ${createdDate}</span>
+                            ${data.price ? `<span class="price-tag">¥${data.price}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="detail-body">
+                        <div class="detail-content">${formatContent(data.content)}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('ctaSection').style.display = 'block';
+        }
+
+        function showError() {
+            document.getElementById('content').innerHTML = `
+                <div class="error-page">
+                    <h2>内容加载失败</h2>
+                    <p>请稍后重试或返回首页</p>
+                    <a href="home.html" class="back-btn" style="margin-top:16px;">返回首页</a>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatContent(content) {
+            if (!content) return '';
+            return content
+                .split('\n')
+                .filter(line => line.trim())
+                .map(line => `<p>${escapeHtml(line)}</p>`)
+                .join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', initSupabase);
+    </script>
 </body>
 </html>
