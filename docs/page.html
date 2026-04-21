@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模块详情</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; min-height: 100vh; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    
+    .back-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .back-btn { background: white; color: #333; border: none; padding: 10px 16px; border-radius: 10px; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 4px; }
+    .back-btn:hover { background: #f8f9fa; }
+    
+    .header { background: linear-gradient(135deg, #2ecc71, #27ae60); border-radius: 20px; padding: 30px 20px; text-align: center; color: white; margin-bottom: 20px; position: relative; overflow: hidden; }
+    .header::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+    .header::after { content: ''; position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+    .module-icon { font-size: 4rem; margin-bottom: 12px; }
+    .module-name { font-size: 1.8rem; font-weight: bold; }
+    .module-count { font-size: 0.95rem; opacity: 0.9; margin-top: 6px; }
+    
+    .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .card-title { font-size: 1.2rem; font-weight: 600; color: #333; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    
+    .link-list { list-style: none; }
+    .link-item { padding: 16px; background: #f8f9fa; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+    .link-item:hover { background: #f0f1f5; transform: translateX(4px); }
+    .link-item a { flex: 1; color: #2c3e50; text-decoration: none; font-size: 1rem; display: flex; align-items: center; gap: 10px; overflow: hidden; }
+    .link-item a span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .link-item .arrow { color: #bbb; font-size: 1.2rem; }
+    
+    .link-item.empty { justify-content: center; color: #999; font-size: 0.95rem; background: none; border: 2px dashed #ddd; cursor: default; }
+    .link-item.empty:hover { background: #f8f9fa; transform: none; }
+    
+    .empty-state { text-align: center; color: #999; padding: 30px; font-size: 0.95rem; }
+    
+    .loading { text-align: center; color: #999; padding: 40px; }
+    
+    .footer-tip { text-align: center; color: #999; font-size: 0.85rem; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="back-bar">
+      <button class="back-btn" onclick="history.back()">← 返回首页</button>
+    </div>
+    
+    <div class="header">
+      <div class="module-icon" id="moduleIcon">📁</div>
+      <div class="module-name" id="moduleName">加载中...</div>
+      <div class="module-count" id="moduleCount">-</div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">🔗 精选内容</div>
+      <ul class="link-list" id="linkList">
+        <li class="loading">加载中...</li>
+      </ul>
+    </div>
+    
+    <div class="footer-tip">更多内容持续更新中...</div>
+  </div>
+  
+  <script>
+    const API = '';
+    const urlParams = new URLSearchParams(window.location.search);
+    const moduleId = urlParams.get('id');
+    
+    const defaultModules = {
+      'subject2': { name: '科目二', icon: '🚗', desc: '考试技巧与要点' },
+      'subject3': { name: '科目三', icon: '🛣️', desc: '路考要点详解' },
+      'video': { name: '免费影视', icon: '🎬', desc: '海量高清资源' },
+      'music': { name: '免费音乐', icon: '🎵', desc: '无损音质享受' }
+    };
+    
+    async function loadModule() {
+      if (!moduleId) {
+        document.getElementById('linkList').innerHTML = '<li class="empty-state">无效的模块</li>';
+        return;
+      }
+      
+      try {
+        const res = await fetch(`${API}/api/module/${moduleId}`);
+        if (res.ok) {
+          const module = await res.json();
+          renderModule(module);
+        } else {
+          renderDefaultModule();
+        }
+      } catch (err) {
+        renderDefaultModule();
+      }
+    }
+    
+    function renderModule(module) {
+      document.getElementById('moduleName').textContent = module.name || '未知模块';
+      document.getElementById('moduleIcon').textContent = module.icon || '📁';
+      document.getElementById('moduleCount').textContent = `${module.links ? module.links.length : 0} 个精选内容`;
+      document.title = module.name + ' - 双安驾校';
+      
+      const list = document.getElementById('linkList');
+      const links = module.links || [];
+      
+      if (links.length === 0) {
+        list.innerHTML = `
+          <li class="link-item empty">
+            <span>暂无内容，管理员正在添加中...</span>
+          </li>
+        `;
+        return;
+      }
+      
+      list.innerHTML = links.map(link => `
+        <li class="link-item">
+          <a href="${link.url}" target="_blank">
+            <span>${link.name}</span>
+            <span class="arrow">↗</span>
+          </a>
+        </li>
+      `).join('');
+    }
+    
+    function renderDefaultModule() {
+      const defaultModule = defaultModules[moduleId] || { name: '未知模块', icon: '📁', desc: '' };
+      
+      document.getElementById('moduleName').textContent = defaultModule.name;
+      document.getElementById('moduleIcon').textContent = defaultModule.icon;
+      document.getElementById('moduleCount').textContent = defaultModule.desc;
+      document.title = defaultModule.name + ' - 双安驾校';
+      
+      document.getElementById('linkList').innerHTML = `
+        <li class="link-item empty">
+          <span>暂无内容，管理员正在添加中...</span>
+        </li>
+      `;
+    }
+    
+    loadModule();
+  </script>
+</body>
+</html>
