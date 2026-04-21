@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>双安驾校管理后台</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; min-height: 100vh; }
@@ -255,8 +256,12 @@
   </div>
   
   <div class="toast" id="toast"></div>
-  <script>
-    const API = '';
+ <script>
+    const SUPABASE_URL = 'https://iinoqavrthukxojfalnu.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpbm9xYXZydGh1a3hvamZhbG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjY0MTAsImV4cCI6MjA1OTYwMjQxMH0.Jq24eiXI64MOA4067GVfA_X_8sQLbI';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
     let schoolData = { name: '双安驾校', phone: '', address: '', logo: '' };
     let students = [];
     let notices = [];
@@ -265,16 +270,17 @@
     
     async function loadData() {
       try {
-        const [schoolRes, studentsRes, dataRes] = await Promise.all([
-          fetch(`${API}/api/school`),
-          fetch(`${API}/api/students`),
-          fetch(`${API}/api/data`)
+        const [studentsRes, noticesRes, modulesRes, schoolRes] = await Promise.all([
+          supabase.from('students').select('*').order('date', { ascending: false }),
+          supabase.from('notices').select('*').order('date', { ascending: false }),
+          supabase.from('modules').select('*'),
+          supabase.from('school').select('*').eq('id', 'config').single()
         ]);
-        schoolData = await schoolRes.json();
-        students = await studentsRes.json();
-        const data = await dataRes.json();
-        notices = data.notices || [];
-        modules = data.modules || [];
+        
+        students = studentsRes.data || [];
+        notices = noticesRes.data || [];
+        modules = modulesRes.data || [];
+        schoolData = schoolRes.data || { name: '双安驾校', phone: '', address: '', logo: '' };
         
         renderSchoolInfo();
         renderStudents();
@@ -282,6 +288,7 @@
         renderModules();
         updateStats();
       } catch (err) {
+        console.error('加载失败', err);
         showToast('加载失败');
       }
     }
@@ -308,9 +315,9 @@
         <tr>
           <td>${s.name}</td>
           <td>${s.phone}</td>
-          <td>${s.idCard}</td>
+          <td>${s.id_card}</td>
           <td>${formatDate(s.date)}</td>
-          <td><button class="btn-sm btn-danger" onclick="deleteStudent(${i})">删除</button></td>
+          <td><button class="btn-sm btn-danger" onclick="deleteStudent(${s.id})">删除</button></td>
         </tr>
       `).join('');
     }
@@ -328,7 +335,7 @@
             <div class="notice-date">${formatDate(n.date)}</div>
           </div>
           <div class="notice-actions">
-            <button class="btn-sm btn-danger" onclick="deleteNotice(${i})">删除</button>
+            <button class="btn-sm btn-danger" onclick="deleteNotice(${n.id})">删除</button>
           </div>
         </li>
       `).join('');
@@ -337,8 +344,6 @@
     function renderModules() {
       const grid = document.getElementById('moduleGrid');
       
-      const defaultModuleIds = ['subject2', 'subject3', 'video', 'music'];
-      
       const defaultModules = [
         { id: 'subject2', name: '科目二', icon: '🚗', desc: '考试技巧与要点' },
         { id: 'subject3', name: '科目三', icon: '🛣️', desc: '路考要点详解' },
@@ -346,24 +351,19 @@
         { id: 'music', name: '免费音乐', icon: '🎵', desc: '无损音质享受' }
       ];
       
-      const mergedModules = [...defaultModules];
-      
+      const allModules = [...defaultModules];
       modules.forEach(m => {
-        if (defaultModuleIds.includes(m.id)) {
-          const index = mergedModules.findIndex(dm => dm.id === m.id);
-          if (index !== -1) {
-            mergedModules[index] = { ...mergedModules[index], ...m };
-          }
+        const idx = allModules.findIndex(dm => dm.id === m.id);
+        if (idx !== -1) {
+          allModules[idx] = { ...allModules[idx], ...m };
         } else {
-          if (!mergedModules.find(dm => dm.id === m.id)) {
-            mergedModules.push(m);
-          }
+          allModules.push(m);
         }
       });
       
-      grid.innerHTML = mergedModules.map((m) => {
+      grid.innerHTML = allModules.map((m) => {
         const linkCount = m.links ? m.links.length : 0;
-        const isUserAdded = !defaultModuleIds.includes(m.id);
+        const isUserAdded = !['subject2', 'subject3', 'video', 'music'].includes(m.id);
         
         return `
           <div class="module-card" onclick="editModule('${m.id}')">
@@ -401,11 +401,14 @@
       const address = document.getElementById('schoolAddress').value.trim();
       
       try {
-        await fetch(`${API}/api/school`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, phone, address })
+        const { error } = await supabase.from('school').upsert({
+          id: 'config',
+          name, phone, address,
+          logo: schoolData.logo || ''
         });
+        
+        if (error) throw error;
+        
         schoolData.name = name;
         schoolData.phone = phone;
         schoolData.address = address;
@@ -419,28 +422,38 @@
       const file = event.target.files[0];
       if (!file) return;
       
-      const formData = new FormData();
-      formData.append('logo', file);
-      
-      try {
-        const res = await fetch(`${API}/api/school/logo`, { method: 'POST', body: formData });
-        const data = await res.json();
-        schoolData.logo = data.logo;
-        document.getElementById('logoPreview').src = data.logo;
-        document.getElementById('logoPreview').style.display = 'block';
-        document.getElementById('logoPlaceholder').style.display = 'none';
-        showToast('上传成功');
-      } catch (err) {
-        showToast('上传失败');
-      }
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const logo = e.target.result;
+        try {
+          const { error } = await supabase.from('school').upsert({
+            id: 'config',
+            name: schoolData.name,
+            phone: schoolData.phone,
+            address: schoolData.address,
+            logo
+          });
+          
+          if (error) throw error;
+          
+          schoolData.logo = logo;
+          document.getElementById('logoPreview').src = logo;
+          document.getElementById('logoPreview').style.display = 'block';
+          document.getElementById('logoPlaceholder').style.display = 'none';
+          showToast('上传成功');
+        } catch (err) {
+          showToast('上传失败');
+        }
+      };
+      reader.readAsDataURL(file);
       event.target.value = '';
     }
     
-    async function deleteStudent(index) {
+    async function deleteStudent(id) {
       if (!confirm('确定删除该学员？')) return;
       try {
-        await fetch(`${API}/api/students/${index}`, { method: 'DELETE' });
-        students.splice(index, 1);
+        await supabase.from('students').delete().eq('id', id);
+        students = students.filter(s => s.id !== id);
         renderStudents();
         updateStats();
         showToast('已删除');
@@ -455,13 +468,9 @@
       if (!text) return;
       
       try {
-        const res = await fetch(`${API}/api/notices`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
-        });
-        const newNotice = await res.json();
-        notices.unshift(newNotice);
+        const { data, error } = await supabase.from('notices').insert([{ text }]).select().single();
+        if (error) throw error;
+        notices.unshift(data);
         input.value = '';
         renderNotices();
         showToast('发布成功');
@@ -470,11 +479,11 @@
       }
     }
     
-    async function deleteNotice(index) {
+    async function deleteNotice(id) {
       if (!confirm('确定删除该公告？')) return;
       try {
-        await fetch(`${API}/api/notices/${index}`, { method: 'DELETE' });
-        notices.splice(index, 1);
+        await supabase.from('notices').delete().eq('id', id);
+        notices = notices.filter(n => n.id !== id);
         renderNotices();
         showToast('已删除');
       } catch (err) {
@@ -489,7 +498,7 @@
       initIconPicker();
     }
     
-    const moduleIcons = ['🚗','🛣️','🎓','📚','🎬','🎵','🎮','🏆','📱','💻','🌐','📝','📋','📌','🔗','💡','🔥','⭐','❤️','👍','🌟','💪','🎯','🏅','🥇','🏆','🎪','🎭','🎨','🎪','🎲','🏃','🚶','🧘','🏋️','🚴','🏊','🎿','⛷️','🏂','🛹','🚲','🛵','🏍️','🚕','🚗','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🛻','🚚','🚛','🚜','🛴','🚏','🛤️','🛣️','🚦','🚥','🗺️','🗿','🗽','🏰','🏯','🏟️','🎡','🎢','🎠','⛱️','🛳️','🚢','⛵','🛥️','🚤','✈️','🛩️','🚀','🛸','🛰️','📡','⏰','⏱️','⏲️','🕐','📅','📆','🗓️','📇','📈','📉','📊','📋','📌','📍','📎','🖇️','📏','📐','✂️','🖊️','🖋️','✏️','🖌️','🖍️','📝','📄','📃','📜','📰','📓','📔','📒','📕','📗','📘','📙','📚','🏷️'];
+    const moduleIcons = ['🚗','🛣️','🎓','📚','🎬','🎵','🎮','🏆','📱','💻','🌐','📝','📋','📌','🔗','💡','🔥','⭐','❤️','👍','🌟','💪','🎯','🏅','🥇','🏆','🎪','🎭','🎨','🎲','🏃','🚶','🧘','🏋️','🚴','🏊','🎿','⛷️','🏂','🛹','🚲','🛵','🏍️','🚕','🚗','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🛻','🚚','🚛','🚜','🛴','🚏','🛤️','🚦','🚥','🗺️','🗿','🗽','🏰','🏯','🏟️','🎡','🎢','🎠','⛱️','🛳️','🚢','⛵','🛥️','🚤','✈️','🛩️','🚀','🛸','🛰️','📡','⏰','⏱️','⏲️','🕐','📅','📆','🗓️','📇','📈','📉','📊','📋','📌','📍','📎','🖇️','📏','📐','✂️','🖊️','🖋️','✏️','🖌️','🖍️','📝','📄','📃','📜','📰','📓','📔','📒','📕','📗','📘','📙','📚','🏷️'];
     
     function initIconPicker() {
       const picker = document.getElementById('iconPicker');
@@ -510,14 +519,13 @@
       const icon = document.getElementById('moduleIconInput').value.trim() || '📁';
       if (!name) return;
       
+      const id = 'custom_' + Date.now();
+      
       try {
-        const res = await fetch(`${API}/api/modules`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, icon })
-        });
-        const newModule = await res.json();
-        modules.push(newModule);
+        const { error } = await supabase.from('modules').insert([{ id, name, icon, links: [] }]);
+        if (error) throw error;
+        
+        modules.push({ id, name, icon, links: [] });
         closeModal('addModuleModal');
         renderModules();
         showToast('添加成功');
@@ -529,7 +537,7 @@
     async function deleteModule(id) {
       if (!confirm('确定删除该模块？')) return;
       try {
-        await fetch(`${API}/api/modules/${id}`, { method: 'DELETE' });
+        await supabase.from('modules').delete().eq('id', id);
         modules = modules.filter(m => m.id !== id);
         renderModules();
         showToast('已删除');
@@ -555,6 +563,7 @@
       renderModuleLinks();
       document.getElementById('editModuleModal').classList.add('active');
     }
+    
     function renderModuleLinks() {
       const list = document.getElementById('moduleLinksList');
       const links = currentEditModule.links || [];
@@ -584,29 +593,16 @@
       }
       
       try {
-        let moduleId = currentEditModule.id;
+        const links = [...(currentEditModule.links || []), { name, url }];
+        const { error } = await supabase.from('modules').update({ links }).eq('id', currentEditModule.id);
+        if (error) throw error;
         
-        if (!modules.find(m => m.id === moduleId)) {
-          const createRes = await fetch(`${API}/api/modules`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: currentEditModule.name, icon: currentEditModule.icon })
-          });
-          const newModule = await createRes.json();
-          modules.push(newModule);
-          currentEditModule = newModule;
-          moduleId = newModule.id;
+        currentEditModule.links = links;
+        
+        const idx = modules.findIndex(m => m.id === currentEditModule.id);
+        if (idx !== -1) {
+          modules[idx] = currentEditModule;
         }
-        
-        const res = await fetch(`${API}/api/modules/${moduleId}/links`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, url })
-        });
-        const newLink = await res.json();
-        
-        currentEditModule.links = currentEditModule.links || [];
-        currentEditModule.links.push(newLink);
         
         nameInput.value = '';
         urlInput.value = '';
@@ -622,8 +618,17 @@
       if (!confirm('确定删除该链接？')) return;
       
       try {
-        await fetch(`${API}/api/modules/${currentEditModule.id}/links/${index}`, { method: 'DELETE' });
-        currentEditModule.links.splice(index, 1);
+        const links = [...(currentEditModule.links || [])];
+        links.splice(index, 1);
+        
+        await supabase.from('modules').update({ links }).eq('id', currentEditModule.id);
+        currentEditModule.links = links;
+        
+        const idx = modules.findIndex(m => m.id === currentEditModule.id);
+        if (idx !== -1) {
+          modules[idx] = currentEditModule;
+        }
+        
         renderModuleLinks();
         renderModules();
         showToast('已删除');
