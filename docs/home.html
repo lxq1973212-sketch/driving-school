@@ -1,392 +1,278 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>双安驾校</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; min-height: 100vh; }
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    
-    .header { background: linear-gradient(135deg, #2ecc71, #27ae60); border-radius: 20px; padding: 30px 20px; text-align: center; color: white; margin-bottom: 16px; position: relative; overflow: hidden; }
-    .header::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-    .header::after { content: ''; position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-    .logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; margin-bottom: 12px; }
-    .school-name { font-size: 1.8rem; font-weight: bold; margin-bottom: 6px; }
-    .school-desc { font-size: 0.95rem; opacity: 0.9; }
-    .school-phone { font-size: 1.1rem; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    
-    .share-card { background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 20px; padding: 30px 24px; margin-bottom: 16px; text-align: center; color: white; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 24px rgba(243,156,18,0.3); }
-    .share-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(243,156,18,0.4); }
-    .share-card:active { transform: translateY(-2px); }
-    .share-icon { font-size: 3rem; margin-bottom: 12px; }
-    .share-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 6px; }
-    .share-desc { font-size: 0.95rem; opacity: 0.9; }
-    
-    .notice-banner { background: linear-gradient(135deg, #fff9e6, #fff3cd); border-radius: 16px; padding: 16px 20px; margin-bottom: 16px; border-left: 4px solid #f39c12; }
-    .notice-banner-title { font-size: 0.9rem; color: #f39c12; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-    .notice-banner-content { color: #333; font-size: 1rem; line-height: 1.6; }
-    .notice-banner-date { color: #999; font-size: 0.8rem; margin-top: 8px; }
-    
-    .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-    .card-title { font-size: 1.2rem; font-weight: 600; color: #333; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; color: #666; font-size: 0.9rem; margin-bottom: 6px; }
-    .form-group input { width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem; transition: border-color 0.2s; }
-    .form-group input:focus { outline: none; border-color: #2ecc71; }
-    
-    .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 500; cursor: pointer; transition: transform 0.2s; }
-    .submit-btn:hover { transform: translateY(-2px); }
-    .submit-btn:active { transform: translateY(0); }
-    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    
-    .notice-list { list-style: none; }
-    .notice-item { padding: 14px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 10px; }
-    .notice-item::before { content: '📢'; font-size: 1.2rem; }
-    .notice-text { flex: 1; color: #333; line-height: 1.5; }
-    .notice-date { color: #999; font-size: 0.8rem; white-space: nowrap; }
-    
-    .info-card { background: linear-gradient(135deg, #fff8e1, #fff3cd); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-    .info-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-    .info-row:last-child { border-bottom: none; }
-    .info-icon { font-size: 1.5rem; margin-right: 12px; }
-    .info-content { flex: 1; }
-    .info-label { color: #666; font-size: 0.85rem; }
-    .info-value { color: #333; font-size: 1rem; font-weight: 500; margin-top: 2px; }
-    
-    .module-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .module-item { background: linear-gradient(135deg, #fff, #f8f9fa); border: 2px solid #eee; border-radius: 16px; padding: 20px 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
-    .module-item:hover { border-color: #2ecc71; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(46,204,113,0.15); }
-    .module-item.red { border-color: #ff6b6b; }
-    .module-item.red:hover { border-color: #ff4757; box-shadow: 0 4px 16px rgba(255,71,87,0.15); }
-    .module-item.orange { border-color: #ffa502; }
-    .module-item.orange:hover { border-color: #ff7f00; box-shadow: 0 4px 16px rgba(255,165,2,0.15); }
-    .module-item.blue { border-color: #3498db; }
-    .module-item.blue:hover { border-color: #2980b9; box-shadow: 0 4px 16px rgba(52,152,219,0.15); }
-    .module-item.purple { border-color: #9b59b6; }
-    .module-item.purple:hover { border-color: #8e44ad; box-shadow: 0 4px 16px rgba(155,89,182,0.15); }
-    .module-icon { font-size: 2.5rem; margin-bottom: 8px; }
-    .module-name { font-size: 1rem; color: #333; font-weight: 500; }
-    .module-count { font-size: 0.8rem; color: #999; margin-top: 4px; }
-    
-    .success-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-    .success-modal.active { display: flex; }
-    .success-content { background: white; border-radius: 20px; padding: 40px; text-align: center; max-width: 320px; width: 90%; }
-    .success-icon { font-size: 4rem; margin-bottom: 16px; }
-    .success-title { font-size: 1.4rem; color: #2ecc71; font-weight: bold; margin-bottom: 8px; }
-    .success-text { color: #666; font-size: 0.95rem; margin-bottom: 20px; }
-    
-    .share-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-    .share-modal.active { display: flex; }
-    .share-modal-content { background: white; border-radius: 20px; padding: 30px; text-align: center; max-width: 360px; width: 90%; }
-    .share-modal-title { font-size: 1.3rem; color: #333; font-weight: bold; margin-bottom: 20px; }
-    .share-platforms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
-    .share-platform { padding: 24px 16px; background: #f8f9fa; border-radius: 16px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; }
-    .share-platform:hover { background: #f0f1f5; transform: translateY(-2px); }
-    .share-platform-icon { font-size: 3rem; margin-bottom: 10px; }
-    .share-platform-name { font-size: 1rem; color: #666; font-weight: 500; }
-    .share-platform.copy { background: #f5f5f5; }
-    .share-close { color: #999; font-size: 0.9rem; cursor: pointer; padding: 12px; }
-    
-    .empty-state { text-align: center; color: #999; padding: 20px; }
-    
-    @keyframes bounce {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-    .bounce { animation: bounce 0.5s ease; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>学车报名 - 双安驾校</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background: #f5f5f5; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+        .header { background: linear-gradient(135deg, #1890ff 0%, #0050b3 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 0 0 20px 20px; margin-bottom: 20px; }
+        .header h1 { font-size: 24px; margin-bottom: 8px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .form-card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .form-title { font-size: 16px; font-weight: 600; color: #333; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
+        .form-item { margin-bottom: 20px; }
+        .form-item:last-child { margin-bottom: 0; }
+        .form-item label { display: block; font-size: 14px; color: #666; margin-bottom: 8px; }
+        .form-item label span { color: #ff4d4f; margin-left: 4px; }
+        .input-wrapper { position: relative; }
+        .input-wrapper input, .input-wrapper select, .input-wrapper textarea { width: 100%; padding: 12px 16px; font-size: 15px; border: 1px solid #d9d9d9; border-radius: 8px; outline: none; transition: border-color 0.3s; background: #fff; }
+        .input-wrapper input:focus, .input-wrapper select:focus, .input-wrapper textarea:focus { border-color: #1890ff; box-shadow: 0 0 0 2px rgba(24,144,255,0.2); }
+        .input-wrapper textarea { resize: vertical; min-height: 80px; }
+        .price-info { background: #fffbe6; border: 1px solid #ffe58f; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+        .price-info .title { font-size: 14px; color: #ad6800; margin-bottom: 8px; }
+        .price-info .price { font-size: 28px; font-weight: bold; color: #fa8c16; }
+        .price-info .price span { font-size: 14px; font-weight: normal; }
+        .submit-btn { display: block; width: 100%; padding: 14px; font-size: 16px; font-weight: 500; color: white; background: linear-gradient(135deg, #1890ff 0%, #0050b3 100%); border: none; border-radius: 8px; cursor: pointer; transition: opacity 0.3s; }
+        .submit-btn:active { opacity: 0.8; }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .message { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 1000; display: none; }
+        .message.success { background: #f6ffed; border: 1px solid #b7eb8f; color: #52c41a; }
+        .message.error { background: #fff2f0; border: 1px solid #ffccc7; color: #ff4d4f; }
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 999; }
+        .loading-overlay.active { display: flex; }
+        .loading-spinner { width: 40px; height: 40px; border: 3px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .info-list { background: #fafafa; border-radius: 8px; padding: 16px; }
+        .info-item { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
+        .info-item:not(:last-child) { border-bottom: 1px solid #eee; }
+        .info-item .label { color: #666; }
+        .info-item .value { color: #333; font-weight: 500; }
+        .success-page { text-align: center; padding: 60px 20px; }
+        .success-icon { width: 80px; height: 80px; margin: 0 auto 24px; background: #52c41a; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .success-icon svg { width: 40px; height: 40px; fill: white; }
+        .success-page h2 { font-size: 20px; color: #333; margin-bottom: 12px; }
+        .success-page p { font-size: 14px; color: #666; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <img src="" id="schoolLogo" class="logo" style="display:none" onerror="this.style.display='none'">
-      <div class="school-name" id="schoolName">双安驾校</div>
-      <div class="school-desc">专业驾驶培训·值得信赖</div>
-      <div class="school-phone" id="schoolPhone" style="display:none">📞 <span id="phoneNum"></span></div>
-    </div>
-    
-    <div class="share-card" onclick="openShareModal()">
-      <div class="share-icon">🎁</div>
-      <div class="share-title">分享给好友</div>
-      <div class="share-desc">让更多人了解双安驾校</div>
-    </div>
-    
-    <div id="noticeBannerContainer"></div>
-    
-    <div class="card">
-      <div class="card-title">📝 在线报名</div>
-      <form id="signupForm" onsubmit="submitForm(event)">
-        <div class="form-group">
-          <label>姓名</label>
-          <input type="text" id="nameInput" placeholder="请输入您的姓名" required maxlength="20">
+    <div class="container" id="formContainer">
+        <div class="header">
+            <h1>双安驾校</h1>
+            <p>专业驾驶培训 · 轻松拿证</p>
         </div>
-        <div class="form-group">
-          <label>手机号码</label>
-          <input type="tel" id="phoneInput" placeholder="请输入手机号码" required pattern="1[3-9]\d{9}" maxlength="11">
-        </div>
-        <div class="form-group">
-          <label>身份证号码后6位</label>
-          <input type="text" id="idCardInput" placeholder="请输入身份证号码后6位" required pattern="\d{6}" maxlength="6">
-        </div>
-        <button type="submit" class="submit-btn" id="submitBtn">立即报名</button>
-      </form>
-    </div>
-    
-    <div class="card" id="noticeCard" style="display:none">
-      <div class="card-title">📢 更多公告</div>
-      <ul class="notice-list" id="noticeList"></ul>
-    </div>
-    
-    <div class="card" id="moduleCard">
-      <div class="card-title">🚀 实用服务</div>
-      <div class="module-grid" id="moduleGrid">
-        <div class="empty-state">加载中...</div>
-      </div>
-    </div>
-    
-    <div class="info-card" id="infoCard" style="display:none">
-      <div class="info-row">
-        <span class="info-icon">📍</span>
-        <div class="info-content">
-          <div class="info-label">机构地址</div>
-          <div class="info-value" id="addressValue">-</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="success-modal" id="successModal">
-    <div class="success-content">
-      <div class="success-icon">🎉</div>
-      <div class="success-title">报名成功！</div>
-      <div class="success-text">感谢您的报名，我们的工作人员将在24小时内与您联系</div>
-      <button class="submit-btn" onclick="closeSuccessModal()">知道了</button>
-    </div>
-  </div>
-  
-  <div class="share-modal" id="shareModal">
-    <div class="share-modal-content">
-      <div class="share-modal-title">复制链接分享</div>
-      <div class="share-platforms">
-        <div class="share-platform copy" onclick="copyLink()" style="grid-column: 1 / -1;">
-          <div class="share-platform-icon">🔗</div>
-          <div class="share-platform-name">复制链接</div>
-        </div>
-      </div>
-      <div class="share-close" onclick="closeShareModal()">取消</div>
-    </div>
-  </div>
-  
-  <script>
-    const SUPABASE_URL = 'https://iinoqavrthukxojfalnu.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpbm9xYXZydGh1a3hvamZhbG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTgzNTYsImV4cCI6MjA5MjMzNDM1Nn0.iI_F4zARSfs9YpcFItw-X6gJPGe2eMK54K_xVRq0pBg';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    
-    const moduleColors = ['red', 'orange', 'blue', 'purple', 'green'];
-    let schoolName = '双安驾校';
-    
-    async function loadData() {
-      try {
-        const [noticesRes, modulesRes, schoolRes] = await Promise.all([
-          supabase.from('notices').select('*').order('date', { ascending: false }),
-          supabase.from('modules').select('*'),
-          supabase.from('school').select('*').eq('id', 'config').single()
-        ]);
         
-        const notices = noticesRes.data || [];
-        const modules = modulesRes.data || [];
-        const school = schoolRes.data || {};
+        <div class="price-info">
+            <div class="title">报名费用</div>
+            <div class="price">¥<span id="priceDisplay">4000</span><span>（全包）</span></div>
+        </div>
         
-        if (school.name) {
-          schoolName = school.name;
-          document.getElementById('schoolName').textContent = schoolName;
-          document.title = schoolName;
-        }
-        if (school.logo) {
-          document.getElementById('schoolLogo').src = school.logo;
-          document.getElementById('schoolLogo').style.display = 'block';
-        }
-        if (school.phone) {
-          document.getElementById('phoneNum').textContent = school.phone;
-          document.getElementById('schoolPhone').style.display = 'flex';
-        }
-        if (school.address) {
-          document.getElementById('addressValue').textContent = school.address;
-          document.getElementById('infoCard').style.display = 'block';
-        }
+        <div class="form-card">
+            <div class="form-title">基本信息</div>
+            
+            <div class="form-item">
+                <label>姓名 <span>*</span></label>
+                <div class="input-wrapper">
+                    <input type="text" id="name" placeholder="请输入您的姓名" maxlength="20">
+                </div>
+            </div>
+            
+            <div class="form-item">
+                <label>手机号码 <span>*</span></label>
+                <div class="input-wrapper">
+                    <input type="tel" id="phone" placeholder="请输入手机号码" maxlength="11">
+                </div>
+            </div>
+            
+            <div class="form-item">
+                <label>身份证号 <span>*</span></label>
+                <div class="input-wrapper">
+                    <input type="text" id="idCard" placeholder="请输入18位身份证号" maxlength="18">
+                </div>
+            </div>
+            
+            <div class="form-item">
+                <label>性别 <span>*</span></label>
+                <div class="input-wrapper">
+                    <select id="gender">
+                        <option value="">请选择性别</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         
-        renderNoticeBanner(notices);
-        renderModules(modules);
-      } catch (err) {
-        console.log('加载数据失败');
-        renderModules([]);
-      }
-    }
+        <div class="form-card">
+            <div class="form-title">学车类型</div>
+            
+            <div class="form-item">
+                <label>驾照类型 <span>*</span></label>
+                <div class="input-wrapper">
+                    <select id="licenseType">
+                        <option value="C1">C1（手动挡）</option>
+                        <option value="C2">C2（自动挡）</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-item">
+                <label>学车类型 <span>*</span></label>
+                <div class="input-wrapper">
+                    <select id="studyType">
+                        <option value="普通班">普通班</option>
+                        <option value="VIP班">VIP班（更快拿证）</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-card">
+            <div class="form-title">备注信息</div>
+            
+            <div class="form-item">
+                <label>备注（选填）</label>
+                <div class="input-wrapper">
+                    <textarea id="remark" placeholder="如有特殊需求，请在此说明" maxlength="200"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-card">
+            <div class="form-title">报名须知</div>
+            <div class="info-list">
+                <div class="info-item">
+                    <span class="label">报名条件</span>
+                    <span class="value">18-70周岁</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">所需材料</span>
+                    <span class="value">身份证、手机</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">练车时间</span>
+                    <span class="value">周一至周日</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">拿证周期</span>
+                    <span class="value">45-60天</span>
+                </div>
+            </div>
+        </div>
+        
+        <button class="submit-btn" id="submitBtn" onclick="submitForm()">立即报名</button>
+    </div>
     
-    function openShareModal() {
-      document.getElementById('shareModal').classList.add('active');
-    }
+    <div class="container" id="successContainer" style="display:none;">
+        <div class="header">
+            <h1>报名成功</h1>
+            <p>感谢您的信任，我们将尽快与您联系</p>
+        </div>
+        <div class="form-card">
+            <div class="success-page">
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                </div>
+                <h2>提交成功</h2>
+                <p>我们已收到您的报名信息，客服人员将在24小时内与您联系，请保持手机畅通。</p>
+            </div>
+        </div>
+    </div>
     
-    function closeShareModal() {
-      document.getElementById('shareModal').classList.remove('active');
-    }
-    
-    function copyLink() {
-      closeShareModal();
-      const shareUrl = window.location.href;
-      copyToClipboard(shareUrl, '链接已复制');
-    }
-    
-    function copyToClipboard(text, successMsg) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast(successMsg);
-        }).catch(() => {
-          fallbackCopy(text, successMsg);
+    <div class="message" id="message"></div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://iinoqavrthukxojfalnu.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpbm9xYXZydGh1a3hvamZhbG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTgzNTYsImV4cCI6MjA5MjMzNDM1Nn0.iI_F4zARSfs9YpcFItw-X6gJPGe2eMK54K_xVRq0pBg';
+
+        let sb;
+        let isSubmitting = false;
+
+        async function initSupabase() {
+            try {
+                const { createClient } = supabase;
+                sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data, error } = await sb.from('enrollments').select('id').limit(1);
+                if (error) throw error;
+                console.log('Supabase 连接成功');
+            } catch (error) {
+                console.error('Supabase 初始化失败:', error);
+                showMessage('数据加载失败，请刷新重试', 'error');
+            }
+        }
+
+        function showMessage(text, type = 'success') {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        }
+
+        function validateForm() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const idCard = document.getElementById('idCard').value.trim();
+            const gender = document.getElementById('gender').value;
+            
+            if (!name) { showMessage('请输入姓名', 'error'); return false; }
+            if (!phone) { showMessage('请输入手机号码', 'error'); return false; }
+            if (!/^1[3-9]\d{9}$/.test(phone)) { showMessage('手机号码格式不正确', 'error'); return false; }
+            if (!idCard) { showMessage('请输入身份证号', 'error'); return false; }
+            if (!/^\d{17}[\dXx]$/.test(idCard)) { showMessage('身份证号格式不正确', 'error'); return false; }
+            if (!gender) { showMessage('请选择性别', 'error'); return false; }
+            
+            return true;
+        }
+
+        async function submitForm() {
+            if (isSubmitting) return;
+            if (!validateForm()) return;
+            
+            isSubmitting = true;
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = '提交中...';
+            document.getElementById('loadingOverlay').classList.add('active');
+            
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                id_card: document.getElementById('idCard').value.trim().toUpperCase(),
+                gender: document.getElementById('gender').value,
+                license_type: document.getElementById('licenseType').value,
+                study_type: document.getElementById('studyType').value,
+                remark: document.getElementById('remark').value.trim(),
+                status: 'pending',
+                created_at: new Date().toISOString()
+            };
+            
+            try {
+                const { data, error } = await sb.from('enrollments').insert([formData]);
+                if (error) throw error;
+                
+                document.getElementById('formContainer').style.display = 'none';
+                document.getElementById('successContainer').style.display = 'block';
+            } catch (error) {
+                console.error('提交失败:', error);
+                showMessage('提交失败，请稍后重试', 'error');
+                btn.disabled = false;
+                btn.textContent = '立即报名';
+            } finally {
+                isSubmitting = false;
+                document.getElementById('loadingOverlay').classList.remove('active');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initSupabase();
+            document.getElementById('phone').addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+            });
+            document.getElementById('idCard').addEventListener('input', function() {
+                this.value = this.value.replace(/[\w]/g, '').toUpperCase();
+            });
         });
-      } else {
-        fallbackCopy(text, successMsg);
-      }
-    }
-    
-    function fallbackCopy(text, successMsg) {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand('copy');
-        showToast(successMsg);
-      } catch (err) {
-        showToast('复制失败，请长按链接手动复制');
-      }
-      document.body.removeChild(textarea);
-    }
-    
-    function showToast(msg) {
-      const toast = document.createElement('div');
-      toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:12px 24px;border-radius:8px;font-size:14px;z-index:3000;opacity:0;transition:opacity 0.3s';
-      toast.textContent = msg;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.style.opacity = '1', 10);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => document.body.removeChild(toast), 300);
-      }, 2000);
-    }
-    
-    function renderNoticeBanner(notices) {
-      const container = document.getElementById('noticeBannerContainer');
-      
-      if (notices.length === 0) {
-        container.innerHTML = '';
-        return;
-      }
-      
-      const latest = notices[0];
-      container.innerHTML = `
-        <div class="notice-banner">
-          <div class="notice-banner-title">📢 公告</div>
-          <div class="notice-banner-content">${latest.text}</div>
-          <div class="notice-banner-date">${formatDate(latest.date)}</div>
-        </div>
-      `;
-      
-      if (notices.length > 1) {
-        document.getElementById('noticeCard').style.display = 'block';
-        document.getElementById('noticeList').innerHTML = notices.slice(1).map(n => `
-          <li class="notice-item">
-            <span class="notice-text">${n.text}</span>
-            <span class="notice-date">${formatDate(n.date)}</span>
-          </li>
-        `).join('');
-      }
-    }
-    
-    function renderModules(modules) {
-      const grid = document.getElementById('moduleGrid');
-      
-      if (modules.length === 0) {
-        grid.innerHTML = `
-          <div class="module-item" onclick="goModule('subject2')">
-            <div class="module-icon">🚗</div>
-            <div class="module-name">科目二</div>
-            <div class="module-count">考试技巧</div>
-          </div>
-          <div class="module-item" onclick="goModule('subject3')">
-            <div class="module-icon">🛣️</div>
-            <div class="module-name">科目三</div>
-            <div class="module-count">路考要点</div>
-          </div>
-          <div class="module-item orange" onclick="goModule('video')">
-            <div class="module-icon">🎬</div>
-            <div class="module-name">免费影视</div>
-            <div class="module-count">海量资源</div>
-          </div>
-          <div class="module-item purple" onclick="goModule('music')">
-            <div class="module-icon">🎵</div>
-            <div class="module-name">免费音乐</div>
-            <div class="module-count">无损音质</div>
-          </div>
-        `;
-        return;
-      }
-      
-      grid.innerHTML = modules.map((m, i) => `
-        <div class="module-item ${moduleColors[i % moduleColors.length]}" onclick="goModule('${m.id}')">
-          <div class="module-icon">${m.icon || '📁'}</div>
-          <div class="module-name">${m.name}</div>
-          <div class="module-count">${m.links ? m.links.length : 0} 个链接</div>
-        </div>
-      `).join('');
-    }
-    
-    function goModule(id) {
-      window.location.href = `page.html?id=${id}`;
-    }
-    
-    async function submitForm(event) {
-      event.preventDefault();
-      
-      const name = document.getElementById('nameInput').value.trim();
-      const phone = document.getElementById('phoneInput').value.trim();
-      const idCard = document.getElementById('idCardInput').value.trim();
-      
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.textContent = '提交中...';
-      
-      try {
-        const { error } = await supabase.from('students').insert([{ name, phone, id_card: idCard }]);
-        
-        if (error) throw error;
-        
-        document.getElementById('successModal').classList.add('active');
-        document.getElementById('signupForm').reset();
-      } catch (err) {
-        alert('提交失败，请稍后重试');
-      }
-      
-      btn.disabled = false;
-      btn.textContent = '立即报名';
-    }
-    
-    function closeSuccessModal() {
-      document.getElementById('successModal').classList.remove('active');
-    }
-    
-    function formatDate(str) {
-      const d = new Date(str);
-      return `${d.getMonth()+1}/${d.getDate()}`;
-    }
-    
-    loadData();
-  </script>
+    </script>
 </body>
 </html>
