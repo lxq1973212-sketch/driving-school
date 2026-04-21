@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>模块详情</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; min-height: 100vh; }
@@ -63,7 +64,11 @@
   </div>
   
   <script>
-    const API = '';
+    const SUPABASE_URL = 'https://iinoqavrthukxojfalnu.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpbm9xYXZydGh1a3hvamZhbG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjY0MTAsImV4cCI6MjA1OTYwMjQxMH0.Jq24eiXI64MOA4067GVfA_X_8sQLbI';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
     const urlParams = new URLSearchParams(window.location.search);
     const moduleId = urlParams.get('id');
     
@@ -81,12 +86,12 @@
       }
       
       try {
-        const res = await fetch(`${API}/api/module/${moduleId}`);
-        if (res.ok) {
-          const module = await res.json();
-          renderModule(module);
-        } else {
+        const { data, error } = await supabase.from('modules').select('*').eq('id', moduleId).single();
+        
+        if (error || !data) {
           renderDefaultModule();
+        } else {
+          renderModule(data);
         }
       } catch (err) {
         renderDefaultModule();
