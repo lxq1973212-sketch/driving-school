@@ -3,139 +3,294 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>双安驾校</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; min-height: 100vh; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #2ecc71, #27ae60); border-radius: 20px; padding: 30px 20px; text-align: center; color: white; margin-bottom: 16px; position: relative; overflow: hidden; }
+    .header::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+    .header::after { content: ''; position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+    .logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid white; margin-bottom: 12px; }
+    .school-name { font-size: 1.8rem; font-weight: bold; margin-bottom: 6px; }
+    .school-desc { font-size: 0.95rem; opacity: 0.9; }
+    .school-phone { font-size: 1.1rem; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .share-card { background: linear-gradient(135deg, #f39c12, #e67e22); border-radius: 20px; padding: 30px 24px; margin-bottom: 16px; text-align: center; color: white; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 24px rgba(243,156,18,0.3); }
+    .share-card:hover { transform: translateY(-4px); }
+    .share-icon { font-size: 3rem; margin-bottom: 12px; }
+    .share-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 6px; }
+    .share-desc { font-size: 0.95rem; opacity: 0.9; }
+    .notice-banner { background: linear-gradient(135deg, #fff9e6, #fff3cd); border-radius: 16px; padding: 16px 20px; margin-bottom: 16px; border-left: 4px solid #f39c12; }
+    .notice-banner-title { font-size: 0.9rem; color: #f39c12; font-weight: 600; margin-bottom: 8px; }
+    .notice-banner-content { color: #333; font-size: 1rem; line-height: 1.6; }
+    .notice-banner-date { color: #999; font-size: 0.8rem; margin-top: 8px; }
+    .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .card-title { font-size: 1.2rem; font-weight: 600; color: #333; margin-bottom: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; color: #666; font-size: 0.9rem; margin-bottom: 6px; }
+    .form-group input { width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem; transition: border-color 0.2s; }
+    .form-group input:focus { outline: none; border-color: #2ecc71; }
+    .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 500; cursor: pointer; }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .notice-list { list-style: none; }
+    .notice-item { padding: 14px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; }
+    .notice-text { flex: 1; color: #333; line-height: 1.5; }
+    .notice-date { color: #999; font-size: 0.8rem; }
+    .info-card { background: linear-gradient(135deg, #fff8e1, #fff3cd); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+    .info-row { display: flex; align-items: center; padding: 10px 0; }
+    .info-icon { font-size: 1.5rem; margin-right: 12px; }
+    .info-content { flex: 1; }
+    .info-label { color: #666; font-size: 0.85rem; }
+    .info-value { color: #333; font-size: 1rem; font-weight: 500; }
+    .module-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .module-item { background: white; border: 2px solid #eee; border-radius: 16px; padding: 20px 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .module-item:hover { border-color: #2ecc71; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(46,204,113,0.15); }
+    .module-item.red { border-color: #ff6b6b; }
+    .module-item.orange { border-color: #ffa502; }
+    .module-item.blue { border-color: #3498db; }
+    .module-item.purple { border-color: #9b59b6; }
+    .module-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .module-name { font-size: 1rem; color: #333; font-weight: 500; }
+    .module-count { font-size: 0.8rem; color: #999; margin-top: 4px; }
+    .success-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+    .success-modal.active { display: flex; }
+    .success-content { background: white; border-radius: 20px; padding: 40px; text-align: center; max-width: 320px; width: 90%; }
+    .success-icon { font-size: 4rem; margin-bottom: 16px; }
+    .success-title { font-size: 1.4rem; color: #2ecc71; font-weight: bold; margin-bottom: 8px; }
+    .success-text { color: #666; font-size: 0.95rem; margin-bottom: 20px; }
+    .share-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+    .share-modal.active { display: flex; }
+    .share-modal-content { background: white; border-radius: 20px; padding: 30px; text-align: center; max-width: 360px; width: 90%; }
+    .share-modal-title { font-size: 1.3rem; color: #333; font-weight: bold; margin-bottom: 20px; }
+    .share-platform { padding: 24px 16px; background: #f8f9fa; border-radius: 16px; cursor: pointer; transition: all 0.2s; }
+    .share-platform:hover { background: #f0f1f5; }
+    .share-platform-icon { font-size: 3rem; margin-bottom: 10px; }
+    .share-platform-name { font-size: 1rem; color: #666; font-weight: 500; }
+    .share-close { color: #999; font-size: 0.9rem; cursor: pointer; padding: 12px; }
+    .empty-state { text-align: center; color: #999; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="" id="schoolLogo" class="logo" style="display:none" onerror="this.style.display='none'">
+      <div class="school-name" id="schoolName">双安驾校</div>
+      <div class="school-desc">专业驾驶培训·值得信赖</div>
+      <div class="school-phone" id="schoolPhone" style="display:none"> <span id="phoneNum"></span></div>
+    </div>
+    <div class="share-card" onclick="openShareModal()">
+      <div class="share-icon"></div>
+      <div class="share-title">分享给好友</div>
+      <div class="share-desc">让更多人了解双安驾校</div>
+    </div>
+    <div id="noticeBannerContainer"></div>
+    <div class="card">
+      <div class="card-title">在线报名</div>
+      <form id="signupForm" onsubmit="submitForm(event)">
+        <div class="form-group"><label>姓名</label><input type="text" id="nameInput" placeholder="请输入您的姓名" required maxlength="20"></div>
+        <div class="form-group"><label>手机号码</label><input type="tel" id="phoneInput" placeholder="请输入手机号码" required pattern="1[3-9]\d{9}" maxlength="11"></div>
+        <div class="form-group"><label>身份证号码后6位</label><input type="text" id="idCardInput" placeholder="请输入身份证号码后6位" required pattern="\d{6}" maxlength="6"></div>
+        <button type="submit" class="submit-btn" id="submitBtn">立即报名</button>
+      </form>
+    </div>
+    <div class="card" id="noticeCard" style="display:none"><div class="card-title">更多公告</div><ul class="notice-list" id="noticeList"></ul></div>
+    <div class="card"><div class="card-title">实用服务</div><div class="module-grid" id="moduleGrid"><div class="empty-state">加载中...</div></div></div>
+    <div class="info-card" id="infoCard" style="display:none"><div class="info-row"><span class="info-icon"></span><div class="info-content"><div class="info-label">机构地址</div><div class="info-value" id="addressValue">-</div></div></div></div>
+  </div>
+  <div class="success-modal" id="successModal">
+    <div class="success-content">
+      <div class="success-icon"></div>
+      <div class="success-title">报名成功！</div>
+      <div class="success-text">感谢您的报名，我们的工作人员将在24小时内与您联系</div>
+      <button class="submit-btn" onclick="closeSuccessModal()">知道了</button>
+    </div>
+  </div>
+  <div class="share-modal" id="shareModal">
+    <div class="share-modal-content">
+      <div class="share-modal-title">复制链接分享</div>
+      <div class="share-platform" onclick="copyLink()" style="grid-column: 1 / -1;"><div class="share-platform-icon"></div><div class="share-platform-name">复制链接</div></div>
+      <div class="share-close" onclick="closeShareModal()">取消</div>
+    </div>
+  </div>
+  <script>
+    const API_URL = 'https://iinoqavrthukxojfalnu.supabase.co/rest/v1';
+    const API_KEY = 'sb_publishable_MT642GRvmSaI1anfLijpZw_3JyclrMm';
+    const moduleColors = ['red', 'orange', 'blue', 'purple', 'green'];
+    let schoolData = { name: '双安驾校', phone: '', address: '', logo: '' };
+
+    async function apiFetch(endpoint, options = {}) {
+      const url = `${API_URL}/${endpoint}`;
+      const headers = { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' };
+      try {
+        const res = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || '请求失败');
+        return data;
+      } catch (err) { console.error('API Error:', err); throw err; }
+    }
+
+    async function loadData() {
+      try {
+        const [schoolRes, noticesRes, modulesRes] = await Promise.all([
+          apiFetch('school?select=*&limit=1'),
+          apiFetch('notices?select=*&order=created_at.desc'),
+          apiFetch('modules?select=*')
+        ]);
+        schoolData = schoolRes[0] || { name: '双安驾校' };
+        if (schoolData.name) { document.getElementById('schoolName').textContent = schoolData.name; document.title = schoolData.name; }
+        if (schoolData.logo) { document.getElementById('schoolLogo').src = schoolData.logo; document.getElementById('schoolLogo').style.display = 'block'; }
+        if (schoolData.phone) { document.getElementById('phoneNum').textContent = schoolData.phone; document.getElementById('schoolPhone').style.display = 'flex'; }
+        if (schoolData.address) { document.getElementById('addressValue').textContent = schoolData.address; document.getElementById('infoCard').style.display = 'block'; }
+        renderNoticeBanner(noticesRes || []);
+        renderModules(modulesRes || []);
+      } catch (err) { console.error('加载数据失败:', err); renderModules([]); }
+    }
+
+    function openShareModal() { document.getElementById('shareModal').classList.add('active'); }
+    function closeShareModal() { document.getElementById('shareModal').classList.remove('active'); }
+    function copyLink() { closeShareModal(); copyToClipboard(window.location.href, '链接已复制'); }
+    function copyToClipboard(text, successMsg) { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(() => showToast(successMsg)).catch(() => fallbackCopy(text, successMsg)); } else { fallbackCopy(text, successMsg); } }
+    function fallbackCopy(text, successMsg) { const textarea = document.createElement('textarea'); textarea.value = text; textarea.style.position = 'fixed'; textarea.style.opacity = '0'; document.body.appendChild(textarea); textarea.select(); try { document.execCommand('copy'); showToast(successMsg); } catch (err) { showToast('复制失败'); } document.body.removeChild(textarea); }
+    function showToast(msg) { const toast = document.createElement('div'); toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:12px 24px;border-radius:8px;font-size:14px;z-index:3000;opacity:0;transition:opacity 0.3s'; toast.textContent = msg; document.body.appendChild(toast); setTimeout(() => toast.style.opacity = '1', 10); setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => document.body.removeChild(toast), 300); }, 2000); }
+
+    function renderNoticeBanner(notices) {
+      const container = document.getElementById('noticeBannerContainer');
+      if (notices.length === 0) { container.innerHTML = ''; return; }
+      const latest = notices[0];
+      container.innerHTML = `<div class="notice-banner"><div class="notice-banner-title">公告</div><div class="notice-banner-content">${escapeHtml(latest.text)}</div><div class="notice-banner-date">${formatDate(latest.created_at)}</div></div>`;
+      if (notices.length > 1) { document.getElementById('noticeCard').style.display = 'block'; document.getElementById('noticeList').innerHTML = notices.slice(1).map(n => `<li class="notice-item"><span class="notice-text">${escapeHtml(n.text)}</span><span class="notice-date">${formatDate(n.created_at)}</span></li>`).join(''); }
+    }
+
+    function renderModules(modules) {
+      const grid = document.getElementById('moduleGrid');
+      if (modules.length === 0) {
+        grid.innerHTML = `<div class="module-item" onclick="goModule('subject2')"><div class="module-icon"></div><div class="module-name">科目二</div><div class="module-count">考试技巧</div></div>
+        <div class="module-item" onclick="goModule('subject3')"><div class="module-icon"></div><div class="module-name">科目三</div><div class="module-count">路考要点</div></div>
+        <div class="module-item orange" onclick="goModule('video')"><div class="module-icon"></div><div class="module-name">免费影视</div><div class="module-count">海量资源</div></div>
+        <div class="module-item purple" onclick="goModule('music')"><div class="module-icon"></div><div class="module-name">免费音乐</div><div class="module-count">无损音质</div></div>`;
+        return;
+      }
+      grid.innerHTML = modules.map((m, i) => { let links = []; try { links = typeof m.links === 'string' ? JSON.parse(m.links) : (m.links || []); } catch (e) { links = []; } return `<div class="module-item ${moduleColors[i % moduleColors.length]}" onclick="goModule(${m.id})"><div class="module-icon">${m.icon || ''}</div><div class="module-name">${escapeHtml(m.name)}</div><div class="module-count">${links.length} 个链接</div></div>`; }).join('');
+    }
+
+    function goModule(id) { window.location.href = `page.html?id=${id}`; }
+
+    async function submitForm(event) {
+      event.preventDefault();
+      const name = document.getElementById('nameInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+      const idCard = document.getElementById('idCardInput').value.trim();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true; btn.textContent = '提交中...';
+      try {
+        await apiFetch('enrollments', { method: 'POST', body: JSON.stringify({ name, phone, id_card: idCard, status: 'pending', created_at: new Date().toISOString() }) });
+        document.getElementById('successModal').classList.add('active');
+        document.getElementById('signupForm').reset();
+      } catch (err) { alert('提交失败，请稍后重试'); }
+      btn.disabled = false; btn.textContent = '立即报名';
+    }
+
+    function closeSuccessModal() { document.getElementById('successModal').classList.remove('active'); }
+    function formatDate(str) { if (!str) return ''; const d = new Date(str); return `${d.getMonth()+1}/${d.getDate()}`; }
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+    loadData();
+  </script>
+</body>
+</html>
+page.html (模块详情页)：
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>模块详情</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6fa; min-height: 100vh; }
     .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    
     .back-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-    .back-btn { background: white; color: #333; border: none; padding: 10px 16px; border-radius: 10px; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 4px; }
-    .back-btn:hover { background: #f8f9fa; }
-    
+    .back-btn { background: white; color: #333; border: none; padding: 10px 16px; border-radius: 10px; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     .header { background: linear-gradient(135deg, #2ecc71, #27ae60); border-radius: 20px; padding: 30px 20px; text-align: center; color: white; margin-bottom: 20px; position: relative; overflow: hidden; }
     .header::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
     .header::after { content: ''; position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; }
     .module-icon { font-size: 4rem; margin-bottom: 12px; }
     .module-name { font-size: 1.8rem; font-weight: bold; }
     .module-count { font-size: 0.95rem; opacity: 0.9; margin-top: 6px; }
-    
     .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-    .card-title { font-size: 1.2rem; font-weight: 600; color: #333; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    
+    .card-title { font-size: 1.2rem; font-weight: 600; color: #333; margin-bottom: 16px; }
     .link-list { list-style: none; }
     .link-item { padding: 16px; background: #f8f9fa; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
     .link-item:hover { background: #f0f1f5; transform: translateX(4px); }
     .link-item a { flex: 1; color: #2c3e50; text-decoration: none; font-size: 1rem; display: flex; align-items: center; gap: 10px; overflow: hidden; }
     .link-item a span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .link-item .arrow { color: #bbb; font-size: 1.2rem; }
-    
     .link-item.empty { justify-content: center; color: #999; font-size: 0.95rem; background: none; border: 2px dashed #ddd; cursor: default; }
-    .link-item.empty:hover { background: #f8f9fa; transform: none; }
-    
     .empty-state { text-align: center; color: #999; padding: 30px; font-size: 0.95rem; }
-    
-    .loading { text-align: center; color: #999; padding: 40px; }
-    
     .footer-tip { text-align: center; color: #999; font-size: 0.85rem; padding: 20px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="back-bar">
-      <button class="back-btn" onclick="history.back()">← 返回首页</button>
-    </div>
-    
+    <div class="back-bar"><button class="back-btn" onclick="history.back()">返回首页</button></div>
     <div class="header">
-      <div class="module-icon" id="moduleIcon">📁</div>
+      <div class="module-icon" id="moduleIcon"></div>
       <div class="module-name" id="moduleName">加载中...</div>
       <div class="module-count" id="moduleCount">-</div>
     </div>
-    
-    <div class="card">
-      <div class="card-title">🔗 精选内容</div>
-      <ul class="link-list" id="linkList">
-        <li class="loading">加载中...</li>
-      </ul>
-    </div>
-    
+    <div class="card"><div class="card-title">精选内容</div><ul class="link-list" id="linkList"><li class="empty-state">加载中...</li></ul></div>
     <div class="footer-tip">更多内容持续更新中...</div>
   </div>
-  
   <script>
-    const API = '';
+    const API_URL = 'https://iinoqavrthukxojfalnu.supabase.co/rest/v1';
+    const API_KEY = 'sb_publishable_MT642GRvmSaI1anfLijpZw_3JyclrMm';
+    const defaultModules = { 'subject2': { name: '科目二', icon: '🚗', desc: '考试技巧与要点' }, 'subject3': { name: '科目三', icon: '🛣️', desc: '路考要点详解' }, 'video': { name: '免费影视', icon: '🎬', desc: '海量高清资源' }, 'music': { name: '免费音乐', icon: '🎵', desc: '无损音质享受' } };
     const urlParams = new URLSearchParams(window.location.search);
     const moduleId = urlParams.get('id');
-    
-    const defaultModules = {
-      'subject2': { name: '科目二', icon: '🚗', desc: '考试技巧与要点' },
-      'subject3': { name: '科目三', icon: '🛣️', desc: '路考要点详解' },
-      'video': { name: '免费影视', icon: '🎬', desc: '海量高清资源' },
-      'music': { name: '免费音乐', icon: '🎵', desc: '无损音质享受' }
-    };
-    
-    async function loadModule() {
-      if (!moduleId) {
-        document.getElementById('linkList').innerHTML = '<li class="empty-state">无效的模块</li>';
-        return;
-      }
-      
+
+    async function apiFetch(endpoint, options = {}) {
+      const url = `${API_URL}/${endpoint}`;
+      const headers = { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' };
       try {
-        const res = await fetch(`${API}/api/module/${moduleId}`);
-        if (res.ok) {
-          const module = await res.json();
-          renderModule(module);
-        } else {
-          renderDefaultModule();
-        }
-      } catch (err) {
-        renderDefaultModule();
-      }
+        const res = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || '请求失败');
+        return data;
+      } catch (err) { console.error('API Error:', err); throw err; }
     }
-    
+
+    async function loadModule() {
+      if (!moduleId) { document.getElementById('linkList').innerHTML = '<li class="empty-state">无效的模块</li>'; return; }
+      try {
+        const data = await apiFetch(`modules?id=eq.${moduleId}&select=*&limit=1`);
+        if (!data || data.length === 0) { renderDefaultModule(); return; }
+        renderModule(data[0]);
+      } catch (err) { console.error('加载模块失败:', err); renderDefaultModule(); }
+    }
+
     function renderModule(module) {
       document.getElementById('moduleName').textContent = module.name || '未知模块';
-      document.getElementById('moduleIcon').textContent = module.icon || '📁';
-      document.getElementById('moduleCount').textContent = `${module.links ? module.links.length : 0} 个精选内容`;
+      document.getElementById('moduleIcon').textContent = module.icon || '';
       document.title = module.name + ' - 双安驾校';
-      
+      let links = []; try { links = typeof module.links === 'string' ? JSON.parse(module.links) : (module.links || []); } catch (e) { links = []; }
+      document.getElementById('moduleCount').textContent = `${links.length} 个精选内容`;
       const list = document.getElementById('linkList');
-      const links = module.links || [];
-      
-      if (links.length === 0) {
-        list.innerHTML = `
-          <li class="link-item empty">
-            <span>暂无内容，管理员正在添加中...</span>
-          </li>
-        `;
-        return;
-      }
-      
-      list.innerHTML = links.map(link => `
-        <li class="link-item">
-          <a href="${link.url}" target="_blank">
-            <span>${link.name}</span>
-            <span class="arrow">↗</span>
-          </a>
-        </li>
-      `).join('');
+      if (links.length === 0) { list.innerHTML = '<li class="link-item empty"><span>暂无内容，管理员正在添加中...</span></li>'; return; }
+      list.innerHTML = links.map(link => `<li class="link-item"><a href="${escapeHtml(link.url)}" target="_blank"><span>${escapeHtml(link.name)}</span><span class="arrow"></span></a></li>`).join('');
     }
-    
+
     function renderDefaultModule() {
-      const defaultModule = defaultModules[moduleId] || { name: '未知模块', icon: '📁', desc: '' };
-      
+      const defaultModule = defaultModules[moduleId] || { name: '未知模块', icon: '', desc: '' };
       document.getElementById('moduleName').textContent = defaultModule.name;
       document.getElementById('moduleIcon').textContent = defaultModule.icon;
       document.getElementById('moduleCount').textContent = defaultModule.desc;
       document.title = defaultModule.name + ' - 双安驾校';
-      
-      document.getElementById('linkList').innerHTML = `
-        <li class="link-item empty">
-          <span>暂无内容，管理员正在添加中...</span>
-        </li>
-      `;
+      document.getElementById('linkList').innerHTML = '<li class="link-item empty"><span>暂无内容，管理员正在添加中...</span></li>';
     }
-    
+
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
     loadModule();
   </script>
 </body>
