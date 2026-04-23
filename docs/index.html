@@ -57,6 +57,9 @@
     .link-list { list-style: none; }
     .link-item { padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
     .link-item a { color: #2ecc71; text-decoration: none; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .icon-option { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; font-size: 1.5rem; background: #f5f5f5; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
+    .icon-option:hover { border-color: #2ecc71; background: #e8f8f0; }
+    .icon-option.selected { border-color: #2ecc71; background: #d4f8e4; }
   </style>
 </head>
 <body>
@@ -105,8 +108,22 @@
         <input type="text" id="moduleNameInput" placeholder="如：科目二">
       </div>
       <div class="modal-row">
-        <label>图标（输入emoji，如🚗）</label>
-        <input type="text" id="moduleIconInput" placeholder="🚗">
+        <label>选择图标</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="🚗">🚗</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="🚌">🚌</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="🚕">🚕</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="🏍️">🏍️</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="📚">📚</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="📝">📝</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="🎥">🎥</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="🎵">🎵</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="📱">📱</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="💻">💻</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="📁">📁</span>
+          <span class="icon-option" onclick="selectIcon(this)" data-icon="🔧">🔧</span>
+        </div>
+        <input type="text" id="moduleIconInput" placeholder="或输入emoji，如🚗">
       </div>
       <div class="modal-buttons">
         <button class="btn-secondary" onclick="closeModal('addModuleModal')">取消</button>
@@ -272,9 +289,22 @@
       var html = '';
       for (var i = 0; i < notices.length; i++) {
         var n = notices[i];
-        html += '<li class="notice-item"><div>' + escapeHtml(n.text) + '</div><div style="color:#999;font-size:0.8rem;margin-top:4px">' + formatDate(n.date || n.created_at) + '</div></li>';
+        html += '<li class="notice-item"><div style="display:flex;justify-content:space-between;align-items:center"><span style="flex:1">' + escapeHtml(n.text) + '</span><button class="btn-sm btn-danger" onclick="deleteNotice(\'' + n.id + '\')" style="margin-left:10px">删除</button></div><div style="color:#999;font-size:0.8rem;margin-top:4px">' + formatDate(n.date || n.created_at) + '</div></li>';
       }
       list.innerHTML = html;
+    }
+
+    function deleteNotice(id) {
+      if (!confirm('确定删除该公告？')) return;
+      apiDelete('notices?id=eq.' + id, function(err) {
+        if (!err) {
+          notices = notices.filter(function(n) { return n.id !== id; });
+          renderNotices();
+          showToast('已删除');
+        } else {
+          showToast('删除失败');
+        }
+      });
     }
 
     function renderModules() {
@@ -343,7 +373,16 @@
     function openAddModule() {
       document.getElementById('moduleNameInput').value = '';
       document.getElementById('moduleIconInput').value = '';
+      var opts = document.querySelectorAll('.icon-option');
+      for (var i = 0; i < opts.length; i++) opts[i].classList.remove('selected');
       document.getElementById('addModuleModal').classList.add('active');
+    }
+
+    function selectIcon(el) {
+      var opts = document.querySelectorAll('.icon-option');
+      for (var i = 0; i < opts.length; i++) opts[i].classList.remove('selected');
+      el.classList.add('selected');
+      document.getElementById('moduleIconInput').value = el.getAttribute('data-icon');
     }
 
     function addModule() {
@@ -454,7 +493,11 @@
       modules[newIndex] = temp;
       currentModule = modules[index];
       renderModules();
-      showToast('已移动');
+      apiPatch('modules?id=eq.' + currentModule.id, { created_at: new Date().toISOString() }, function(err) {
+        if (!err) {
+          showToast('已移动');
+        }
+      });
     }
 
     function closeModal(id) {
