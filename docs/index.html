@@ -245,7 +245,17 @@
     
     async function addModule() { const name = document.getElementById('moduleNameInput').value.trim(), icon = document.getElementById('moduleIconInput').value.trim() || '📁'; if (!name) return; try { const newModule = await apiFetch('modules', { method: 'POST', body: JSON.stringify({ name, icon, links: '[]' }) }); modules.push(newModule); closeModal('addModuleModal'); renderModules(); showToast('添加成功'); } catch (err) { showToast('添加失败'); } }
     async function deleteModule(id) { if (!confirm('确定删除该模块？')) return; try { await apiFetch('modules?id=eq.' + id, { method: 'DELETE' }); modules = modules.filter(m => m.id !== id); renderModules(); showToast('已删除'); } catch (err) { showToast('删除失败'); } }
-    function editModule(id) { currentEditModule = modules.find(m => m.id == id); if (!currentEditModule) return; document.getElementById('editModuleName').textContent = currentEditModule.name; document.getElementById('linkNameInput').placeholder = '在' + currentEditModule.name + '中添加链接名称'; renderModuleLinks(); document.getElementById('editModuleModal').classList.add('active'); }
+    function editModule(id) {
+      currentEditModule = modules.find(m => m.id == id);
+      if (!currentEditModule) {
+        alert('未找到模块，ID: ' + id);
+        return;
+      }
+      document.getElementById('editModuleName').textContent = currentEditModule.name + ' (ID:' + currentEditModule.id + ')';
+      document.getElementById('linkNameInput').placeholder = '在' + currentEditModule.name + '中添加链接名称';
+      renderModuleLinks();
+      document.getElementById('editModuleModal').classList.add('active');
+    }
     function renderModuleLinks() { const list = document.getElementById('moduleLinksList'); let links = []; try { links = typeof currentEditModule.links === 'string' ? JSON.parse(currentEditModule.links) : (currentEditModule.links || []); } catch (e) { links = []; } if (links.length === 0) { list.innerHTML = '<li class="empty-state">暂无链接，点击下方添加</li>'; return; } list.innerHTML = links.map((link, i) => '<li><a href="' + escapeHtml(link.url) + '" target="_blank">' + escapeHtml(link.name) + '</a><button class="btn-sm btn-danger" onclick="deleteModuleLink(' + i + ')">删除</button></li>').join(''); }
     async function addModuleLink() { const nameInput = document.getElementById('linkNameInput'), urlInput = document.getElementById('linkUrlInput'); let name = nameInput.value.trim(), url = urlInput.value.trim(); if (!name || !url) { showToast('请输入链接名称和网址'); return; } if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url; try { let links = []; try { links = typeof currentEditModule.links === 'string' ? JSON.parse(currentEditModule.links) : (currentEditModule.links || []); } catch (e) { links = []; } links.push({ name, url }); await apiFetch('modules?id=eq.' + currentEditModule.id, { method: 'PATCH', body: JSON.stringify({ links: JSON.stringify(links), updated_at: new Date().toISOString() }) }); currentEditModule.links = links; nameInput.value = ''; urlInput.value = ''; renderModuleLinks(); renderModules(); showToast('添加成功'); } catch (err) { showToast('添加失败'); } }
     async function deleteModuleLink(index) { if (!confirm('确定删除该链接？')) return; try { let links = []; try { links = typeof currentEditModule.links === 'string' ? JSON.parse(currentEditModule.links) : (currentEditModule.links || []); } catch (e) { links = []; } links.splice(index, 1); await apiFetch('modules?id=eq.' + currentEditModule.id, { method: 'PATCH', body: JSON.stringify({ links: JSON.stringify(links), updated_at: new Date().toISOString() }) }); currentEditModule.links = links; renderModuleLinks(); renderModules(); showToast('已删除'); } catch (err) { showToast('删除失败'); } }
