@@ -369,11 +369,33 @@
       } else {
         var html = '';
         for (var i = 0; i < links.length; i++) {
-          html += '<li class="link-item"><a href="' + escapeHtml(links[i].url) + '" target="_blank">' + escapeHtml(links[i].name) + '</a></li>';
+          html += '<li class="link-item"><a href="#" onclick="openUrl(\'' + escapeHtml(links[i].url) + '\');return false;">' + escapeHtml(links[i].name) + '</a><button class="btn-sm btn-danger" onclick="deleteLink(' + i + ')">删除</button></li>';
         }
         list.innerHTML = html;
       }
       document.getElementById('editModuleModal').classList.add('active');
+    }
+
+    function openUrl(url) {
+      window.open(url, '_blank');
+    }
+
+    function deleteLink(index) {
+      if (!currentModule) return;
+      if (!confirm('确定删除该链接？')) return;
+      var links = [];
+      try { links = JSON.parse(currentModule.links || '[]'); } catch(e) { links = []; }
+      links.splice(index, 1);
+      apiPatch('modules?id=eq.' + currentModule.id, { links: JSON.stringify(links) }, function(err) {
+        if (!err) {
+          currentModule.links = JSON.stringify(links);
+          openModule(currentModule.id);
+          renderModules();
+          showToast('已删除');
+        } else {
+          showToast('删除失败');
+        }
+      });
     }
 
     function addLink() {
