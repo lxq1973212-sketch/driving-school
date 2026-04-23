@@ -267,40 +267,28 @@
     let modules = [];
     let currentEditModule = null;
 
-    index.html 更新版 - 新增了更详细的错误提示
-
-// 找到 addModuleLink 函数，把整个函数替换为：
-    async function addModuleLink() {
-      const nameInput = document.getElementById('linkNameInput');
-      const urlInput = document.getElementById('linkUrlInput');
-      const name = nameInput.value.trim();
-      let url = urlInput.value.trim();
-      
-      if (!name || !url) {
-        showToast('请输入链接名称和网址');
-        return;
-      }
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'https://' + url;
-      }
-      
+    async function apiFetch(endpoint, options = {}) {
+      const url = `${API_URL}/${endpoint}`;
+      const headers = {
+        'apikey': API_KEY,
+        'Authorization': `Bearer ${API_KEY}`,
+        'Content-Type': 'application/json'
+      };
       try {
-        let links = [];
-        try { links = typeof currentEditModule.links === 'string' ? JSON.parse(currentEditModule.links) : (currentEditModule.links || []); } catch (e) { links = []; }
-        
-        links.push({ name, url });
-        
-        await apiFetch(`modules?id=eq.${currentEditModule.id}`, { method: 'PATCH', body: JSON.stringify({ links: JSON.stringify(links), updated_at: new Date().toISOString() }) });
-        
-        currentEditModule.links = links;
-        nameInput.value = '';
-        urlInput.value = '';
-        renderModuleLinks();
-        renderModules();
-        showToast('添加成功');
+        const res = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
+        const text = await res.text();
+        if (!res.ok) {
+          try {
+            const data = JSON.parse(text);
+            throw new Error(data.message || '请求失败');
+          } catch {
+            throw new Error(text || '请求失败');
+          }
+        }
+        return text ? JSON.parse(text) : {};
       } catch (err) {
-        console.error('添加链接失败:', err);
-        showToast('添加失败: ' + err.message);
+        console.error('API Error:', err);
+        throw err;
       }
     }
 
@@ -392,11 +380,11 @@
         const linkCount = links.length;
         
         return `
-          <div class="module-card" onclick="editModule(${m.id})">
+          <div class="module-card" onclick="editModule('${m.id}')">
             <div class="module-card-header">
               <span class="module-card-icon">${m.icon || '📁'}</span>
               <span class="module-card-name">${escapeHtml(m.name)}</span>
-              <button class="btn-sm btn-danger" onclick="event.stopPropagation();deleteModule(${m.id})" style="margin-left:auto;padding:4px 8px;font-size:0.75rem;">删除</button>
+              <button class="btn-sm btn-danger" onclick="event.stopPropagation();deleteModule('${m.id}')" style="margin-left:auto;padding:4px 8px;font-size:0.75rem;">删除</button>
             </div>
             <div class="module-card-links">
               ${linkCount > 0 ? `已添加 <strong>${linkCount}</strong> 个链接` : '点击添加链接'}
@@ -590,7 +578,10 @@
       const name = nameInput.value.trim();
       let url = urlInput.value.trim();
       
-      if (!name || !url) return;
+      if (!name || !url) {
+        showToast('请输入链接名称和网址');
+        return;
+      }
       if (!url.startsWith('http://') && !url.startsWith('https://')) {
         url = 'https://' + url;
       }
