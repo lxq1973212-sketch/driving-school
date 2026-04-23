@@ -10,30 +10,21 @@
     .container { max-width: 900px; margin: 0 auto; padding: 20px; }
     h1 { text-align: center; color: #2ecc71; margin-bottom: 24px; font-size: 1.8rem; }
     .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .card-title { font-size: 1.1rem; font-weight: 600; color: #333; display: flex; align-items: center; gap: 6px; }
     .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
     .form-row input { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 0.95rem; }
     input:focus { outline: none; border-color: #2ecc71; }
-    button { padding: 10px 20px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 10px; font-size: 0.95rem; cursor: pointer; transition: transform 0.2s; }
-    button:hover { transform: translateY(-1px); }
+    button { padding: 10px 20px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 10px; font-size: 0.95rem; cursor: pointer; }
     .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
     .btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); }
     .btn-secondary { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
-    .btn-warning { background: linear-gradient(135deg, #f39c12, #e67e22); }
     .student-table { width: 100%; border-collapse: collapse; }
     .student-table th, .student-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
     .student-table th { background: #f8f9fa; color: #666; font-weight: 500; }
-    .student-table tr:hover { background: #f8f9fa; }
     .input-group { display: flex; gap: 10px; margin-bottom: 12px; }
     .input-group input { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 0.95rem; }
-    .logo-preview { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #2ecc71; margin-bottom: 12px; }
-    .upload-area { border: 2px dashed #ddd; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: border-color 0.2s; margin-bottom: 12px; }
-    .upload-area:hover { border-color: #2ecc71; }
-    .upload-area input { display: none; }
-    .tab-bar { display: flex; gap: 4px; background: #f0f0f0; padding: 4px; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-    .tab-btn { padding: 10px 16px; background: none; border: none; border-radius: 10px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; color: #666; }
-    .tab-btn.active { background: white; color: #2ecc71; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .tab-bar { display: flex; gap: 4px; background: #f0f0f0; padding: 4px; border-radius: 12px; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 16px; background: none; border: none; border-radius: 10px; font-size: 0.9rem; cursor: pointer; color: #666; }
+    .tab-btn.active { background: white; color: #2ecc71; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
@@ -43,43 +34,29 @@
     .stat-number { font-size: 2rem; font-weight: bold; }
     .stat-label { font-size: 0.9rem; opacity: 0.9; }
     .notice-list { list-style: none; }
-    .notice-item { padding: 14px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-    .notice-content { flex: 1; }
-    .notice-text { color: #333; line-height: 1.5; }
-    .notice-date { color: #999; font-size: 0.8rem; margin-top: 4px; }
-    .notice-actions { display: flex; gap: 6px; }
+    .notice-item { padding: 14px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px; }
     .module-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .module-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
-    .module-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(46,204,113,0.2); border-color: #2ecc71; }
-    .module-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .module-card-icon { font-size: 2.5rem; }
-    .module-card-name { font-size: 1.2rem; font-weight: 600; color: #333; flex: 1; }
-    .module-card-links { font-size: 0.9rem; color: #666; margin-bottom: 12px; padding: 8px 12px; background: #f8f9fa; border-radius: 8px; }
-    .module-card-links strong { color: #2ecc71; }
-    .module-card-tip { font-size: 0.85rem; color: #999; text-align: center; margin-top: 8px; }
+    .module-card { background: white; border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; border: 2px solid #eee; }
+    .module-card:hover { border-color: #2ecc71; }
+    .module-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .module-name { font-size: 1.1rem; font-weight: 600; color: #333; }
+    .module-links { font-size: 0.85rem; color: #666; margin-top: 4px; }
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
     .modal.active { display: flex; }
-    .modal-content { background: white; border-radius: 16px; padding: 24px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: white; border-radius: 16px; padding: 24px; width: 90%; max-width: 500px; }
     .modal-title { font-size: 1.2rem; color: #333; margin-bottom: 16px; }
     .modal-row { margin-bottom: 12px; }
     .modal-row label { display: block; color: #666; font-size: 0.85rem; margin-bottom: 4px; }
     .modal-row input { width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 0.95rem; }
     .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
-    .empty-state { text-align: center; color: #999; padding: 30px; font-size: 0.95rem; }
-    .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; opacity: 0; transition: all 0.3s; z-index: 2000; }
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .header-actions { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-    .preview-link { display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; border-radius: 10px; text-decoration: none; font-size: 0.95rem; transition: transform 0.2s; }
-    .preview-link:hover { transform: translateY(-1px); }
-    .link-edit-modal { max-width: 600px; }
-    .link-list-admin { list-style: none; max-height: 300px; overflow-y: auto; }
-    .link-list-admin li { padding: 10px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-    .link-list-admin a { color: #2ecc71; text-decoration: none; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .link-add-row { display: flex; gap: 8px; margin-top: 12px; }
-    .link-add-row input { flex: 1; }
-    .icon-picker { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-top: 8px; }
-    .icon-picker span { font-size: 1.5rem; padding: 8px; text-align: center; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
-    .icon-picker span:hover { background: #e8f5e9; transform: scale(1.2); }
+    .empty-state { text-align: center; color: #999; padding: 30px; }
+    .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; z-index: 2000; opacity: 0; transition: opacity 0.3s; }
+    .toast.show { opacity: 1; }
+    .header-actions { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+    .preview-link { display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; border-radius: 10px; text-decoration: none; }
+    .link-list { list-style: none; }
+    .link-item { padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .link-item a { color: #2ecc71; text-decoration: none; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -87,13 +64,11 @@
     <h1>双安驾校管理后台</h1>
     <div class="header-actions">
       <a href="home.html" class="preview-link" target="_blank">预览招生页面</a>
-      <button class="btn-warning" onclick="openShareModal()">生成分享海报</button>
     </div>
     <div class="tab-bar">
       <button class="tab-btn active" onclick="switchTab('students')">报名学员</button>
       <button class="tab-btn" onclick="switchTab('notices')">公告管理</button>
       <button class="tab-btn" onclick="switchTab('modules')">实用服务</button>
-      <button class="tab-btn" onclick="switchTab('settings')">机构设置</button>
     </div>
     <div id="tab-students" class="tab-content active">
       <div class="stat-grid">
@@ -102,180 +77,372 @@
         <div class="stat-item blue"><div class="stat-number" id="monthStudents">0</div><div class="stat-label">本月报名</div></div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">报名列表</span></div>
-        <table class="student-table"><thead><tr><th>姓名</th><th>电话</th><th>身份证后6位</th><th>驾照类型</th><th>报名时间</th><th>操作</th></tr></thead><tbody id="studentTable"></tbody></table>
+        <table class="student-table"><thead><tr><th>姓名</th><th>电话</th><th>时间</th><th>操作</th></tr></thead><tbody id="studentTable"></tbody></table>
       </div>
     </div>
     <div id="tab-notices" class="tab-content">
-      <div class="card"><div class="card-header"><span class="card-title">发布公告</span></div><div class="input-group"><input type="text" id="noticeInput" placeholder="输入公告内容..." onkeypress="if(event.key==='Enter')addNotice()"><button onclick="addNotice()">发布</button></div></div>
-      <div class="card"><div class="card-header"><span class="card-title">公告列表</span></div><ul class="notice-list" id="noticeList"></ul></div>
+      <div class="card">
+        <div class="input-group">
+          <input type="text" id="noticeInput" placeholder="输入公告内容...">
+          <button onclick="addNotice()">发布</button>
+        </div>
+      </div>
+      <ul class="notice-list" id="noticeList"></ul>
     </div>
     <div id="tab-modules" class="tab-content">
-      <div class="card"><div class="card-header"><span class="card-title">添加服务模块</span><button class="btn-sm" onclick="openAddModuleModal()">添加模块</button></div></div>
+      <div class="card">
+        <button onclick="openAddModule()">添加模块</button>
+      </div>
       <div class="module-grid" id="moduleGrid"></div>
     </div>
-    <div id="tab-settings" class="tab-content">
-      <div class="card">
-        <div class="card-header"><span class="card-title">机构信息</span></div>
-        <div class="upload-area" onclick="document.getElementById('logoInput').click()"><input type="file" id="logoInput" accept="image/*" onchange="uploadLogo(event)"><img src="" id="logoPreview" class="logo-preview" style="display:none"><div id="logoPlaceholder">点击上传机构LOGO</div></div>
-        <div class="form-row"><input type="text" id="schoolName" placeholder="机构名称" value="双安驾校"></div>
-        <div class="form-row"><input type="text" id="schoolPhone" placeholder="联系电话"></div>
-        <div class="form-row"><input type="text" id="schoolAddress" placeholder="机构地址"></div>
-        <button onclick="saveSchoolInfo()">保存设置</button>
+  </div>
+
+  <div class="modal" id="addModuleModal">
+    <div class="modal-content">
+      <div class="modal-title">添加模块</div>
+      <div class="modal-row">
+        <label>模块名称</label>
+        <input type="text" id="moduleNameInput" placeholder="如：科目二">
+      </div>
+      <div class="modal-row">
+        <label>图标（输入emoji，如🚗）</label>
+        <input type="text" id="moduleIconInput" placeholder="🚗">
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-secondary" onclick="closeModal('addModuleModal')">取消</button>
+        <button onclick="addModule()">添加</button>
       </div>
     </div>
   </div>
-  <div class="modal" id="addModuleModal"><div class="modal-content"><div class="modal-title">添加服务模块</div><div class="modal-row"><label>模块名称</label><input type="text" id="moduleNameInput" placeholder="如：科目二"></div><div class="modal-row"><label>选择图标</label><div class="icon-picker" id="iconPicker"></div></div><div class="modal-row"><label>或输入emoji</label><input type="text" id="moduleIconInput" placeholder="如：🚗"></div><div class="modal-buttons"><button class="btn-secondary" onclick="closeModal('addModuleModal')">取消</button><button onclick="addModule()">添加</button></div></div></div>
-  <div class="modal" id="editModuleModal"><div class="modal-content link-edit-modal"><div class="modal-title">管理模块链接 - <span id="editModuleName"></span></div><ul class="link-list-admin" id="moduleLinksList"></ul><div class="link-add-row"><input type="text" id="linkNameInput" placeholder="链接名称"><input type="url" id="linkUrlInput" placeholder="https://"><button class="btn-sm" onclick="addModuleLink()">添加</button></div><div class="modal-buttons"><button class="btn-secondary" onclick="closeModal('editModuleModal')">关闭</button></div></div></div>
-  <div class="modal" id="shareModal"><div class="modal-content"><div class="modal-title">生成分享海报</div><p style="color:#666;font-size:0.9rem;margin-bottom:12px">保存下方海报图片，分享到微信/QQ，让更多人扫码报名</p><canvas id="posterCanvas" width="600" height="900" style="width:100%;max-width:300px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.15)"></canvas><div style="margin-top:16px"><button onclick="downloadPoster()" style="width:100%">保存海报图片</button><button class="btn-secondary" onclick="closeModal('shareModal')" style="width:100%;margin-top:10px">关闭</button></div></div></div>
+
+  <div class="modal" id="editModuleModal">
+    <div class="modal-content">
+      <div class="modal-title" id="editModuleTitle">管理模块</div>
+      <ul class="link-list" id="moduleLinksList"></ul>
+      <div class="modal-row">
+        <input type="text" id="linkNameInput" placeholder="链接名称">
+      </div>
+      <div class="modal-row">
+        <input type="text" id="linkUrlInput" placeholder="https://">
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-secondary" onclick="closeModal('editModuleModal')">关闭</button>
+        <button onclick="addLink()">添加链接</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
+
   <script>
-    const API_URL = 'https://iinoqavrthukxojfalnu.supabase.co/rest/v1';
-    const API_KEY = 'sb_publishable_MT642GRvmSaI1anfLijpZw_3JyclrMm';
-    let schoolData = { id: null, name: '双安驾校', phone: '', address: '', logo: '' };
-    let students = [], notices = [], modules = [], currentEditModule = null;
+    var API_URL = 'https://iinoqavrthukxojfalnu.supabase.co/rest/v1';
+    var API_KEY = 'sb_publishable_MT642GRvmSaI1anfLijpZw_3JyclrMm';
+    var schoolData = { id: null, name: '双安驾校' };
+    var students = [];
+    var notices = [];
+    var modules = [];
+    var currentModule = null;
 
-    async function apiFetch(endpoint, options = {}) {
-      const url = API_URL + '/' + endpoint;
-      const headers = { 
-        'apikey': API_KEY, 
-        'Authorization': 'Bearer ' + API_KEY, 
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      };
-      try {
-        const res = await fetch(url, Object.assign({}, options, { headers: Object.assign({}, headers, options.headers) }));
-        if (!res.ok) {
-          const text = await res.text();
-          try { throw new Error(JSON.parse(text).message || '请求失败'); } catch { throw new Error(text || '请求失败'); }
+    function apiFetch(endpoint, callback) {
+      var url = API_URL + '/' + endpoint;
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.setRequestHeader('apikey', API_KEY);
+      xhr.setRequestHeader('Authorization', 'Bearer ' + API_KEY);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            try {
+              var data = JSON.parse(xhr.responseText);
+              callback(null, data);
+            } catch(e) {
+              callback(e);
+            }
+          } else {
+            callback(new Error('请求失败'));
+          }
         }
-        return { success: true };
-      } catch (err) { console.error('API Error:', err); throw err; }
+      };
+      xhr.send();
     }
 
-    async function loadData() {
-      try {
-        const [schoolRes, studentsData, noticesData, modulesData] = await Promise.all([
-          apiFetch('school?select=*&limit=1'),
-          apiFetch('enrollments?select=*&order=created_at.desc'),
-          apiFetch('notices?select=*&order=date.desc'),
-          apiFetch('modules?select=*')
-        ]);
-        schoolData = schoolRes[0] || { name: '双安驾校' };
-        students = studentsData || [];
-        notices = noticesData || [];
-        modules = modulesData || [];
-        renderSchoolInfo(); renderStudents(); renderNotices(); renderModules(); updateStats();
-      } catch (err) { console.error('加载失败:', err); showToast('加载失败'); }
-    }
-    
-    function renderSchoolInfo() {
-      document.getElementById('schoolName').value = schoolData.name || '双安驾校';
-      document.getElementById('schoolPhone').value = schoolData.phone || '';
-      document.getElementById('schoolAddress').value = schoolData.address || '';
-      if (schoolData.logo) { document.getElementById('logoPreview').src = schoolData.logo; document.getElementById('logoPreview').style.display = 'block'; document.getElementById('logoPlaceholder').style.display = 'none'; }
-    }
-    
-    function renderStudents() {
-      const tbody = document.getElementById('studentTable');
-      if (students.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无报名学员</td></tr>'; return; }
-      tbody.innerHTML = students.map(s => '<tr><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.phone) + '</td><td>' + escapeHtml(s.id_card ? s.id_card.slice(-6) : '') + '</td><td>' + escapeHtml(s.license_type || '-') + '</td><td>' + formatDate(s.created_at) + '</td><td><button class="btn-sm btn-danger" onclick="deleteStudent(\'' + s.id + '\')">删除</button></td></tr>').join('');
-    }
-    
-    function renderNotices() {
-      const list = document.getElementById('noticeList');
-      if (notices.length === 0) { list.innerHTML = '<li class="empty-state">暂无公告</li>'; return; }
-      list.innerHTML = notices.map(n => '<li class="notice-item"><div class="notice-content"><div class="notice-text">' + escapeHtml(n.text) + '</div><div class="notice-date">' + formatDate(n.date || n.created_at) + '</div></div><div class="notice-actions"><button class="btn-sm btn-danger" onclick="deleteNotice(' + n.id + ')">删除</button></div></li>').join('');
-    }
-    
-    function renderModules() {
-      const grid = document.getElementById('moduleGrid');
-      if (modules.length === 0) { grid.innerHTML = '<div class="empty-state">暂无模块，请点击上方添加</div>'; return; }
-      grid.innerHTML = modules.map(m => {
-        let links = []; try { links = typeof m.links === 'string' ? JSON.parse(m.links) : (m.links || []); } catch (e) { links = []; }
-        return '<div class="module-card" onclick="editModule(\'' + m.id + '\')"><div class="module-card-header"><span class="module-card-icon">' + (m.icon || '📁') + '</span><span class="module-card-name">' + escapeHtml(m.name) + '</span><button class="btn-sm btn-danger" onclick="event.stopPropagation();deleteModule(\'' + m.id + '\')" style="margin-left:auto;padding:4px 8px;font-size:0.75rem;">删除</button></div><div class="module-card-links">' + (links.length > 0 ? '已添加 <strong>' + links.length + '</strong> 个链接' : '点击添加链接') + '</div><div class="module-card-tip">' + escapeHtml(m.desc || '点击卡片管理链接') + '</div></div>';
-      }).join('');
-    }
-    
-    function updateStats() {
-      document.getElementById('totalStudents').textContent = students.length;
-      const today = new Date().toDateString();
-      document.getElementById('todayStudents').textContent = students.filter(s => new Date(s.created_at).toDateString() === today).length;
-      const month = new Date().getMonth(), year = new Date().getFullYear();
-      document.getElementById('monthStudents').textContent = students.filter(s => { const d = new Date(s.created_at); return d.getMonth() === month && d.getFullYear() === year; }).length;
-    }
-    
-    async function saveSchoolInfo() {
-      const name = document.getElementById('schoolName').value.trim(), phone = document.getElementById('schoolPhone').value.trim(), address = document.getElementById('schoolAddress').value.trim();
-      try {
-        if (schoolData.id) { await apiFetch('school?id=eq.' + schoolData.id, { method: 'PATCH', body: JSON.stringify({ name, phone, address, updated_at: new Date().toISOString() }) }); }
-        else { await apiFetch('school', { method: 'POST', body: JSON.stringify({ name, phone, address }) }); }
-        schoolData.name = name; schoolData.phone = phone; schoolData.address = address;
-        showToast('保存成功');
-      } catch (err) { showToast('保存失败'); }
-    }
-    
-    async function uploadLogo(event) {
-      const file = event.target.files[0]; if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        try {
-          if (schoolData.id) { await apiFetch('school?id=eq.' + schoolData.id, { method: 'PATCH', body: JSON.stringify({ logo: e.target.result, updated_at: new Date().toISOString() }) }); }
-          schoolData.logo = e.target.result;
-          document.getElementById('logoPreview').src = e.target.result;
-          document.getElementById('logoPreview').style.display = 'block';
-          document.getElementById('logoPlaceholder').style.display = 'none';
-          showToast('上传成功');
-        } catch (err) { showToast('上传失败'); }
+    function apiPost(endpoint, body, callback) {
+      var url = API_URL + '/' + endpoint;
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('apikey', API_KEY);
+      xhr.setRequestHeader('Authorization', 'Bearer ' + API_KEY);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('Prefer', 'return=minimal');
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 201 || xhr.status === 204) {
+            callback(null);
+          } else {
+            callback(new Error('请求失败'));
+          }
+        }
       };
-      reader.readAsDataURL(file);
-      event.target.value = '';
+      xhr.send(JSON.stringify(body));
     }
-    
-    async function deleteStudent(id) { if (!confirm('确定删除该学员？')) return; try { await apiFetch('enrollments?id=eq.' + id, { method: 'DELETE' }); students = students.filter(s => s.id !== id); renderStudents(); updateStats(); showToast('已删除'); } catch (err) { showToast('删除失败'); } }
-    async function addNotice() { const text = document.getElementById('noticeInput').value.trim(); if (!text) return; try { const newNotice = await apiFetch('notices', { method: 'POST', body: JSON.stringify({ text, date: new Date().toISOString() }) }); notices.unshift(newNotice); document.getElementById('noticeInput').value = ''; renderNotices(); showToast('发布成功'); } catch (err) { showToast('发布失败'); } }
-    async function deleteNotice(id) { if (!confirm('确定删除该公告？')) return; try { await apiFetch('notices?id=eq.' + id, { method: 'DELETE' }); notices = notices.filter(n => n.id !== id); renderNotices(); showToast('已删除'); } catch (err) { showToast('删除失败'); } }
-    
-    function openAddModuleModal() { document.getElementById('moduleNameInput').value = ''; document.getElementById('moduleIconInput').value = ''; document.getElementById('addModuleModal').classList.add('active'); initIconPicker(); }
-    
-    function getIconEmoji(name) { const map = {car:'🚗',road:'🛣️',cap:'🎓',book:'📚',movie:'🎬',music:'🎵',game:'🎮',trophy:'🏆',phone:'📱',computer:'💻',web:'🌐',doc:'📝',list:'📋',pin:'📌',link:'🔗',bulb:'💡',fire:'🔥',star:'⭐',heart:'❤️',thumbsup:'👍',sparkles:'🌟',muscle:'💪',target:'🎯',medal:'🏅',gold:'🥇',trophy:'🏆',circus:'🎪',mask:'🎭',art:'🎨',dice:'🎲',run:'🏃',walk:'🚶',meditate:'🧘',gym:'🏋️',bike:'🚴',swim:'🏊',taxi:'🚕',bus:'🚌',trolley:'🚎',racecar:'🏎️',police:'🚓',ambulance:'🚑',fire:'🚒',truck:'🚚',van:'🛻',scooter:'🛴',busstop:'🚏',rail:'🛤️',light:'🚦',map:'🗺️',moyai:'🗿',statue:'🗽',stadium:'🏟️',ferriswheel:'🎡',coaster:'🎢',carousel:'🎠',beach:'⛱️',cruise:'🛳️',ship:'🚢',sailboat:'⛵',boat:'🛥️',speedboat:'🚤',plane:'✈️',jet:'🛩️',rocket:'🚀',ufo:'🛸',satellite:'🛰️',antenna:'📡',clock:'⏰',timer:'⏱️',calendar:'📅',chart:'📈',paperclip:'📎',scissors:'✂️',pen:'🖊️',pencil:'✏️',brush:'🖌️',page:'📄',scroll:'📃',newspaper:'📰',notebook:'📓',closedbook:'📕',greenbook:'📗',bluebook:'📘',redbook:'📙',books:'📚',tag:'🏷️'}; return map[name] || '📁'; }
-    const moduleIcons = ['car','road','cap','book','movie','music','game','trophy','phone','computer','web','doc','list','pin','link','bulb','fire','star','heart','thumbsup','sparkles','muscle','target','medal','gold','trophy','circus','mask','art','dice','run','walk','meditate','gym','bike','swim','taxi','bus','trolley','racecar','police','ambulance','fire','truck','van','scooter','busstop','rail','light','map','moyai','statue','stadium','ferriswheel','coaster','carousel','beach','cruise','ship','sailboat','boat','speedboat','plane','jet','rocket','ufo','satellite','antenna','clock','timer','calendar','chart','paperclip','scissors','pen','pencil','brush','page','scroll','newspaper','notebook','closedbook','greenbook','bluebook','redbook','books','tag'];
-    function initIconPicker() { const picker = document.getElementById('iconPicker'); picker.innerHTML = moduleIcons.map(icon => '<span onclick="selectIcon(\'' + icon + '\', event)">' + getIconEmoji(icon) + '</span>').join(''); }
-    function selectIcon(icon, event) { document.getElementById('moduleIconInput').value = getIconEmoji(icon); document.querySelectorAll('#iconPicker span').forEach(s => s.style.background = ''); if (event && event.target) event.target.style.background = '#e8f5e9'; }
-    
-    async function addModule() { const name = document.getElementById('moduleNameInput').value.trim(), icon = document.getElementById('moduleIconInput').value.trim() || '📁'; if (!name) return; try { const newModule = await apiFetch('modules', { method: 'POST', body: JSON.stringify({ name, icon, links: '[]' }) }); modules.push(newModule); closeModal('addModuleModal'); renderModules(); showToast('添加成功'); } catch (err) { showToast('添加失败'); } }
-    async function deleteModule(id) { if (!confirm('确定删除该模块？')) return; try { await apiFetch('modules?id=eq.' + id, { method: 'DELETE' }); modules = modules.filter(m => m.id !== id); renderModules(); showToast('已删除'); } catch (err) { showToast('删除失败'); } }
-    function editModule(id) {
-      currentEditModule = modules.find(m => m.id == id);
-      if (!currentEditModule) {
-        alert('未找到模块，ID: ' + id);
+
+    function apiPatch(endpoint, body, callback) {
+      var url = API_URL + '/' + endpoint;
+      var xhr = new XMLHttpRequest();
+      xhr.open('PATCH', url, true);
+      xhr.setRequestHeader('apikey', API_KEY);
+      xhr.setRequestHeader('Authorization', 'Bearer ' + API_KEY);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('Prefer', 'return=minimal');
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 204) {
+            callback(null);
+          } else {
+            callback(new Error('请求失败'));
+          }
+        }
+      };
+      xhr.send(JSON.stringify(body));
+    }
+
+    function apiDelete(endpoint, callback) {
+      var url = API_URL + '/' + endpoint;
+      var xhr = new XMLHttpRequest();
+      xhr.open('DELETE', url, true);
+      xhr.setRequestHeader('apikey', API_KEY);
+      xhr.setRequestHeader('Authorization', 'Bearer ' + API_KEY);
+      xhr.setRequestHeader('Prefer', 'return=minimal');
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 204 || xhr.status === 200) {
+            callback(null);
+          } else {
+            callback(new Error('请求失败'));
+          }
+        }
+      };
+      xhr.send();
+    }
+
+    function loadData() {
+      apiFetch('school?select=*&limit=1', function(err, data) {
+        if (!err && data && data[0]) schoolData = data[0];
+      });
+      apiFetch('enrollments?select=*&order=created_at.desc', function(err, data) {
+        students = data || [];
+        renderStudents();
+        updateStats();
+      });
+      apiFetch('notices?select=*&order=date.desc', function(err, data) {
+        notices = data || [];
+        renderNotices();
+      });
+      apiFetch('modules?select=*', function(err, data) {
+        modules = data || [];
+        renderModules();
+      });
+    }
+
+    function renderStudents() {
+      var tbody = document.getElementById('studentTable');
+      if (students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">暂无报名学员</td></tr>';
         return;
       }
-      document.getElementById('editModuleName').textContent = currentEditModule.name + ' (ID:' + currentEditModule.id + ')';
-      document.getElementById('linkNameInput').placeholder = '在' + currentEditModule.name + '中添加链接名称';
-      renderModuleLinks();
+      var html = '';
+      for (var i = 0; i < students.length; i++) {
+        var s = students[i];
+        html += '<tr><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.phone) + '</td><td>' + formatDate(s.created_at) + '</td><td><button class="btn-sm btn-danger" onclick="deleteStudent(\'' + s.id + '\')">删除</button></td></tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function renderNotices() {
+      var list = document.getElementById('noticeList');
+      if (notices.length === 0) {
+        list.innerHTML = '<li class="empty-state">暂无公告</li>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < notices.length; i++) {
+        var n = notices[i];
+        html += '<li class="notice-item"><div>' + escapeHtml(n.text) + '</div><div style="color:#999;font-size:0.8rem;margin-top:4px">' + formatDate(n.date || n.created_at) + '</div></li>';
+      }
+      list.innerHTML = html;
+    }
+
+    function renderModules() {
+      var grid = document.getElementById('moduleGrid');
+      if (modules.length === 0) {
+        grid.innerHTML = '<div class="empty-state">暂无模块</div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < modules.length; i++) {
+        var m = modules[i];
+        var links = [];
+        try { links = JSON.parse(m.links || '[]'); } catch(e) { links = []; }
+        html += '<div class="module-card" onclick="openModule(\'' + m.id + '\')"><div class="module-icon">' + (m.icon || '📁') + '</div><div class="module-name">' + escapeHtml(m.name) + '</div><div class="module-links">' + links.length + ' 个链接</div></div>';
+      }
+      grid.innerHTML = html;
+    }
+
+    function updateStats() {
+      document.getElementById('totalStudents').textContent = students.length;
+      var today = new Date().toDateString();
+      var todayCount = 0;
+      for (var i = 0; i < students.length; i++) {
+        if (new Date(students[i].created_at).toDateString() === today) todayCount++;
+      }
+      document.getElementById('todayStudents').textContent = todayCount;
+      var month = new Date().getMonth();
+      var year = new Date().getFullYear();
+      var monthCount = 0;
+      for (var i = 0; i < students.length; i++) {
+        var d = new Date(students[i].created_at);
+        if (d.getMonth() === month && d.getFullYear() === year) monthCount++;
+      }
+      document.getElementById('monthStudents').textContent = monthCount;
+    }
+
+    function deleteStudent(id) {
+      if (!confirm('确定删除？')) return;
+      apiDelete('enrollments?id=eq.' + id, function(err) {
+        if (!err) {
+          students = students.filter(function(s) { return s.id !== id; });
+          renderStudents();
+          updateStats();
+          showToast('已删除');
+        } else {
+          showToast('删除失败');
+        }
+      });
+    }
+
+    function addNotice() {
+      var text = document.getElementById('noticeInput').value.trim();
+      if (!text) return;
+      apiPost('notices', { text: text, date: new Date().toISOString() }, function(err) {
+        if (!err) {
+          notices.unshift({ id: Date.now(), text: text, date: new Date().toISOString() });
+          document.getElementById('noticeInput').value = '';
+          renderNotices();
+          showToast('发布成功');
+        } else {
+          showToast('发布失败');
+        }
+      });
+    }
+
+    function openAddModule() {
+      document.getElementById('moduleNameInput').value = '';
+      document.getElementById('moduleIconInput').value = '';
+      document.getElementById('addModuleModal').classList.add('active');
+    }
+
+    function addModule() {
+      var name = document.getElementById('moduleNameInput').value.trim();
+      var icon = document.getElementById('moduleIconInput').value.trim() || '📁';
+      if (!name) return;
+      apiPost('modules', { name: name, icon: icon, links: '[]' }, function(err) {
+        if (!err) {
+          modules.push({ id: Date.now(), name: name, icon: icon, links: '[]' });
+          closeModal('addModuleModal');
+          renderModules();
+          showToast('添加成功');
+        } else {
+          showToast('添加失败');
+        }
+      });
+    }
+
+    function openModule(id) {
+      currentModule = modules.find(function(m) { return m.id == id; });
+      if (!currentModule) return;
+      document.getElementById('editModuleTitle').textContent = currentModule.name;
+      var links = [];
+      try { links = JSON.parse(currentModule.links || '[]'); } catch(e) { links = []; }
+      var list = document.getElementById('moduleLinksList');
+      if (links.length === 0) {
+        list.innerHTML = '<li class="empty-state">暂无链接</li>';
+      } else {
+        var html = '';
+        for (var i = 0; i < links.length; i++) {
+          html += '<li class="link-item"><a href="' + escapeHtml(links[i].url) + '" target="_blank">' + escapeHtml(links[i].name) + '</a></li>';
+        }
+        list.innerHTML = html;
+      }
       document.getElementById('editModuleModal').classList.add('active');
     }
-    function renderModuleLinks() { const list = document.getElementById('moduleLinksList'); let links = []; try { links = typeof currentEditModule.links === 'string' ? JSON.parse(currentEditModule.links) : (currentEditModule.links || []); } catch (e) { links = []; } if (links.length === 0) { list.innerHTML = '<li class="empty-state">暂无链接，点击下方添加</li>'; return; } list.innerHTML = links.map((link, i) => '<li><a href="' + escapeHtml(link.url) + '" target="_blank">' + escapeHtml(link.name) + '</a><button class="btn-sm btn-danger" onclick="deleteModuleLink(' + i + ')">删除</button></li>').join(''); }
-    async function addModuleLink() { const nameInput = document.getElementById('linkNameInput'), urlInput = document.getElementById('linkUrlInput'); let name = nameInput.value.trim(), url = urlInput.value.trim(); if (!name || !url) { showToast('请输入链接名称和网址'); return; } if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url; try { let links = []; try { links = typeof currentEditModule.links === 'string' ? JSON.parse(currentEditModule.links) : (currentEditModule.links || []); } catch (e) { links = []; } links.push({ name, url }); await apiFetch('modules?id=eq.' + currentEditModule.id, { method: 'PATCH', body: JSON.stringify({ links: JSON.stringify(links), updated_at: new Date().toISOString() }) }); currentEditModule.links = links; nameInput.value = ''; urlInput.value = ''; renderModuleLinks(); renderModules(); showToast('添加成功'); } catch (err) { showToast('添加失败'); } }
-    async function deleteModuleLink(index) { if (!confirm('确定删除该链接？')) return; try { let links = []; try { links = typeof currentEditModule.links === 'string' ? JSON.parse(currentEditModule.links) : (currentEditModule.links || []); } catch (e) { links = []; } links.splice(index, 1); await apiFetch('modules?id=eq.' + currentEditModule.id, { method: 'PATCH', body: JSON.stringify({ links: JSON.stringify(links), updated_at: new Date().toISOString() }) }); currentEditModule.links = links; renderModuleLinks(); renderModules(); showToast('已删除'); } catch (err) { showToast('删除失败'); } }
-    
-    function switchTab(tab) { document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); const tabBtns = document.querySelectorAll('.tab-btn'); const tabContents = ['students', 'notices', 'modules', 'settings']; const idx = tabContents.indexOf(tab); if (idx !== -1) { tabBtns[idx].classList.add('active'); document.getElementById('tab-' + tab).classList.add('active'); } }
-    function openShareModal() { document.getElementById('shareModal').classList.add('active'); generatePoster(); }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    
-    function generatePoster() { const canvas = document.getElementById('posterCanvas'); const ctx = canvas.getContext('2d'); const bg = ctx.createLinearGradient(0, 0, 0, 900); bg.addColorStop(0, '#2ecc71'); bg.addColorStop(1, '#27ae60'); ctx.fillStyle = bg; ctx.fillRect(0, 0, 600, 900); ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.beginPath(); ctx.arc(500, 100, 200, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,0.05)'; ctx.beginPath(); ctx.arc(100, 800, 150, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = 'white'; ctx.beginPath(); ctx.roundRect(40, 200, 520, 650, 20); ctx.fill(); if (schoolData.logo) { const logoImg = new Image(); logoImg.crossOrigin = 'anonymous'; logoImg.onload = () => { ctx.save(); ctx.beginPath(); ctx.arc(300, 280, 60, 0, Math.PI * 2); ctx.clip(); ctx.drawImage(logoImg, 240, 220, 120, 120); ctx.restore(); drawTextAfterLogo(); }; logoImg.onerror = () => drawTextAfterLogo(); logoImg.src = schoolData.logo; } else { drawTextAfterLogo(); } }
-    function drawTextAfterLogo() { const canvas = document.getElementById('posterCanvas'); const ctx = canvas.getContext('2d'); ctx.fillStyle = '#2ecc71'; ctx.font = 'bold 48px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(schoolData.name || '双安驾校', 300, 400); ctx.fillStyle = '#666'; ctx.font = '28px sans-serif'; ctx.fillText('扫码填写报名信息', 300, 470); drawQRCode(ctx, window.location.origin + '/home.html', 150, 225, 520); ctx.fillStyle = '#999'; ctx.font = '20px sans-serif'; ctx.fillText('长按识别二维码报名', 300, 860); }
-    function drawQRCode(ctx, text, size, x, y) { const modules = 25, moduleSize = size / modules, hash = simpleHash(text); ctx.fillStyle = '#2ecc71'; ctx.fillRect(x, y, size, size); ctx.fillStyle = 'white'; ctx.fillRect(x, y, moduleSize * 7, moduleSize * 7); ctx.fillRect(x + size - moduleSize * 7, y, moduleSize * 7, moduleSize * 7); ctx.fillRect(x, y + size - moduleSize * 7, moduleSize * 7, moduleSize * 7); ctx.fillStyle = '#2ecc71'; ctx.fillRect(x + moduleSize, y + moduleSize, moduleSize * 5, moduleSize * 5); ctx.fillRect(x + size - moduleSize * 6, y + moduleSize, moduleSize * 5, moduleSize * 5); ctx.fillRect(x + moduleSize, y + size - moduleSize * 6, moduleSize * 5, moduleSize * 5); ctx.fillStyle = 'white'; ctx.fillRect(x + moduleSize * 2, y + moduleSize * 2, moduleSize * 3, moduleSize * 3); ctx.fillRect(x + size - moduleSize * 5, y + moduleSize * 2, moduleSize * 3, moduleSize * 3); ctx.fillRect(x + moduleSize * 2, y + size - moduleSize * 5, moduleSize * 3, moduleSize * 3); for (let i = 7; i < modules - 7; i++) for (let j = 7; j < modules - 7; j++) if ((hash.charCodeAt((i * 3 + j) % hash.length) + i + j) % 3 === 0) { ctx.fillStyle = 'white'; ctx.fillRect(x + i * moduleSize, y + j * moduleSize, moduleSize, moduleSize); } }
-    function simpleHash(str) { let hash = ''; for (let i = 0; i < str.length; i++) hash += str.charCodeAt(i).toString(16); return hash; }
-    function downloadPoster() { const canvas = document.getElementById('posterCanvas'); const link = document.createElement('a'); link.download = '双安驾校招生海报-' + Date.now() + '.png'; link.href = canvas.toDataURL('image/png'); link.click(); showToast('海报已保存'); }
-    function formatDate(str) { if (!str) return '-'; const d = new Date(str); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
-    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-    function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
-    
-    document.getElementById('addModuleModal').addEventListener('click', (e) => { if (e.target === document.getElementById('addModuleModal')) closeModal('addModuleModal'); });
-    document.getElementById('editModuleModal').addEventListener('click', (e) => { if (e.target === document.getElementById('editModuleModal')) closeModal('editModuleModal'); });
-    document.getElementById('shareModal').addEventListener('click', (e) => { if (e.target === document.getElementById('shareModal')) closeModal('shareModal'); });
+
+    function addLink() {
+      if (!currentModule) return;
+      var name = document.getElementById('linkNameInput').value.trim();
+      var url = document.getElementById('linkUrlInput').value.trim();
+      if (!name || !url) return;
+      if (!url.match(/^https?:\/\//)) url = 'https://' + url;
+      var links = [];
+      try { links = JSON.parse(currentModule.links || '[]'); } catch(e) { links = []; }
+      links.push({ name: name, url: url });
+      apiPatch('modules?id=eq.' + currentModule.id, { links: JSON.stringify(links) }, function(err) {
+        if (!err) {
+          currentModule.links = JSON.stringify(links);
+          document.getElementById('linkNameInput').value = '';
+          document.getElementById('linkUrlInput').value = '';
+          openModule(currentModule.id);
+          renderModules();
+          showToast('添加成功');
+        } else {
+          showToast('添加失败');
+        }
+      });
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function switchTab(tab) {
+      var btns = document.querySelectorAll('.tab-btn');
+      var contents = document.querySelectorAll('.tab-content');
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+      for (var i = 0; i < contents.length; i++) contents[i].classList.remove('active');
+      if (tab === 'students') btns[0].classList.add('active');
+      else if (tab === 'notices') btns[1].classList.add('active');
+      else if (tab === 'modules') btns[2].classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+
+    function formatDate(str) {
+      if (!str) return '-';
+      var d = new Date(str);
+      return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    }
+
+    function pad(n) { return n < 10 ? '0' + n : n; }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2000);
+    }
+
+    document.getElementById('addModuleModal').addEventListener('click', function(e) {
+      if (e.target === document.getElementById('addModuleModal')) closeModal('addModuleModal');
+    });
+    document.getElementById('editModuleModal').addEventListener('click', function(e) {
+      if (e.target === document.getElementById('editModuleModal')) closeModal('editModuleModal');
+    });
+
     loadData();
   </script>
 </body>
