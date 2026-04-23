@@ -137,14 +137,19 @@
 
     async function apiFetch(endpoint, options = {}) {
       const url = API_URL + '/' + endpoint;
-      const headers = { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY, 'Content-Type': 'application/json' };
+      const headers = { 
+        'apikey': API_KEY, 
+        'Authorization': 'Bearer ' + API_KEY, 
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      };
       try {
         const res = await fetch(url, Object.assign({}, options, { headers: Object.assign({}, headers, options.headers) }));
-        const text = await res.text();
         if (!res.ok) {
+          const text = await res.text();
           try { throw new Error(JSON.parse(text).message || '请求失败'); } catch { throw new Error(text || '请求失败'); }
         }
-        return text ? JSON.parse(text) : {};
+        return { success: true };
       } catch (err) { console.error('API Error:', err); throw err; }
     }
 
@@ -233,10 +238,8 @@
     
     function openAddModuleModal() { document.getElementById('moduleNameInput').value = ''; document.getElementById('moduleIconInput').value = ''; document.getElementById('addModuleModal').classList.add('active'); initIconPicker(); }
     
-    const moduleIcons = ['car','road','cap','book','movie','music','game','trophy','phone','computer','web','doc','list','pin','link','bulb','fire','star','heart','thumbsup','sparkles','muscle','target','medal','gold','trophy','circus','mask','art','dice','run','walk','meditate','gym','bike','swim','taxi','bus','trolley','racecar','police','ambulance','fire','truck','van','scooter','busstop','rail','light','map','moyai','statue','stadium','ferriswheel','coaster','carousel','beach','cruise','ship','sailboat','boat','speedboat','plane','jet','rocket','ufo','satellite','antenna','clock','timer','calendar','chart','paperclip','scissors','pen','pencil','brush','page','scroll','newspaper','notebook','closedbook','greenbook','bluebook','redbook','books','tag'];
-    
     function getIconEmoji(name) { const map = {car:'🚗',road:'🛣️',cap:'🎓',book:'📚',movie:'🎬',music:'🎵',game:'🎮',trophy:'🏆',phone:'📱',computer:'💻',web:'🌐',doc:'📝',list:'📋',pin:'📌',link:'🔗',bulb:'💡',fire:'🔥',star:'⭐',heart:'❤️',thumbsup:'👍',sparkles:'🌟',muscle:'💪',target:'🎯',medal:'🏅',gold:'🥇',trophy:'🏆',circus:'🎪',mask:'🎭',art:'🎨',dice:'🎲',run:'🏃',walk:'🚶',meditate:'🧘',gym:'🏋️',bike:'🚴',swim:'🏊',taxi:'🚕',bus:'🚌',trolley:'🚎',racecar:'🏎️',police:'🚓',ambulance:'🚑',fire:'🚒',truck:'🚚',van:'🛻',scooter:'🛴',busstop:'🚏',rail:'🛤️',light:'🚦',map:'🗺️',moyai:'🗿',statue:'🗽',stadium:'🏟️',ferriswheel:'🎡',coaster:'🎢',carousel:'🎠',beach:'⛱️',cruise:'🛳️',ship:'🚢',sailboat:'⛵',boat:'🛥️',speedboat:'🚤',plane:'✈️',jet:'🛩️',rocket:'🚀',ufo:'🛸',satellite:'🛰️',antenna:'📡',clock:'⏰',timer:'⏱️',calendar:'📅',chart:'📈',paperclip:'📎',scissors:'✂️',pen:'🖊️',pencil:'✏️',brush:'🖌️',page:'📄',scroll:'📃',newspaper:'📰',notebook:'📓',closedbook:'📕',greenbook:'📗',bluebook:'📘',redbook:'📙',books:'📚',tag:'🏷️'}; return map[name] || '📁'; }
-    
+    const moduleIcons = ['car','road','cap','book','movie','music','game','trophy','phone','computer','web','doc','list','pin','link','bulb','fire','star','heart','thumbsup','sparkles','muscle','target','medal','gold','trophy','circus','mask','art','dice','run','walk','meditate','gym','bike','swim','taxi','bus','trolley','racecar','police','ambulance','fire','truck','van','scooter','busstop','rail','light','map','moyai','statue','stadium','ferriswheel','coaster','carousel','beach','cruise','ship','sailboat','boat','speedboat','plane','jet','rocket','ufo','satellite','antenna','clock','timer','calendar','chart','paperclip','scissors','pen','pencil','brush','page','scroll','newspaper','notebook','closedbook','greenbook','bluebook','redbook','books','tag'];
     function initIconPicker() { const picker = document.getElementById('iconPicker'); picker.innerHTML = moduleIcons.map(icon => '<span onclick="selectIcon(\'' + icon + '\', event)">' + getIconEmoji(icon) + '</span>').join(''); }
     function selectIcon(icon, event) { document.getElementById('moduleIconInput').value = getIconEmoji(icon); document.querySelectorAll('#iconPicker span').forEach(s => s.style.background = ''); if (event && event.target) event.target.style.background = '#e8f5e9'; }
     
