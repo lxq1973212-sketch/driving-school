@@ -85,9 +85,16 @@
       };
       try {
         const res = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || '请求失败');
-        return data;
+        const text = await res.text();
+        if (!res.ok) {
+          try {
+            const data = JSON.parse(text);
+            throw new Error(data.message || '请求失败');
+          } catch {
+            throw new Error(text || '请求失败');
+          }
+        }
+        return text ? JSON.parse(text) : {};
       } catch (err) {
         console.error('API Error:', err);
         throw err;
