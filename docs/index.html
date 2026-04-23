@@ -118,6 +118,11 @@
   <div class="modal" id="editModuleModal">
     <div class="modal-content">
       <div class="modal-title" id="editModuleTitle">管理模块</div>
+      <div style="margin-bottom:10px;display:flex;gap:5px">
+        <button class="btn-sm" onclick="moveModule('up')">上移</button>
+        <button class="btn-sm" onclick="moveModule('down')">下移</button>
+        <button class="btn-danger" onclick="deleteCurrentModule()">删除模块</button>
+      </div>
       <ul class="link-list" id="moduleLinksList"></ul>
       <div class="modal-row">
         <input type="text" id="linkNameInput" placeholder="链接名称">
@@ -369,15 +374,11 @@
       } else {
         var html = '';
         for (var i = 0; i < links.length; i++) {
-          html += '<li class="link-item"><a href="#" onclick="openUrl(\'' + escapeHtml(links[i].url) + '\');return false;">' + escapeHtml(links[i].name) + '</a><button class="btn-sm btn-danger" onclick="deleteLink(' + i + ')">删除</button></li>';
+          html += '<li class="link-item"><a href="javascript:void(0)" onclick="window.open(\'' + escapeHtml(links[i].url) + '\', \'_blank\')">' + escapeHtml(links[i].name) + '</a><button class="btn-sm btn-danger" onclick="deleteLink(' + i + ')">删除</button></li>';
         }
         list.innerHTML = html;
       }
       document.getElementById('editModuleModal').classList.add('active');
-    }
-
-    function openUrl(url) {
-      window.open(url, '_blank');
     }
 
     function deleteLink(index) {
@@ -419,6 +420,41 @@
           showToast('添加失败');
         }
       });
+    }
+
+    function deleteCurrentModule() {
+      if (!currentModule) return;
+      if (!confirm('确定删除该模块？')) return;
+      apiDelete('modules?id=eq.' + currentModule.id, function(err) {
+        if (!err) {
+          modules = modules.filter(function(m) { return m.id !== currentModule.id; });
+          closeModal('editModuleModal');
+          renderModules();
+          showToast('已删除');
+        } else {
+          showToast('删除失败');
+        }
+      });
+    }
+
+    function moveModule(direction) {
+      if (!currentModule) return;
+      var index = -1;
+      for (var i = 0; i < modules.length; i++) {
+        if (modules[i].id == currentModule.id) { index = i; break; }
+      }
+      if (index === -1) return;
+      var newIndex = direction === 'up' ? index - 1 : index + 1;
+      if (newIndex < 0 || newIndex >= modules.length) {
+        showToast('无法移动');
+        return;
+      }
+      var temp = modules[index];
+      modules[index] = modules[newIndex];
+      modules[newIndex] = temp;
+      currentModule = modules[index];
+      renderModules();
+      showToast('已移动');
     }
 
     function closeModal(id) {
