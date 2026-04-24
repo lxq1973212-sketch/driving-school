@@ -18,7 +18,7 @@
     .btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); }
     .btn-secondary { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
     .student-table { width: 100%; border-collapse: collapse; }
-    .student-table th, .student-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+    .student-table th, .student-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; }
     .student-table th { background: #f8f9fa; color: #666; font-weight: 500; }
     .input-group { display: flex; gap: 10px; margin-bottom: 12px; }
     .input-group input { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 0.95rem; }
@@ -80,7 +80,7 @@
         <div class="stat-item blue"><div class="stat-number" id="monthStudents">0</div><div class="stat-label">本月报名</div></div>
       </div>
       <div class="card">
-        <table class="student-table"><thead><tr><th>姓名</th><th>电话</th><th>时间</th><th>操作</th></tr></thead><tbody id="studentTable"></tbody></table>
+        <table class="student-table"><thead><tr><th>姓名</th><th>电话</th><th>身份</th><th>身份证后6位</th><th>时间</th><th>操作</th></tr></thead><tbody id="studentTable"></tbody></table>
       </div>
     </div>
     <div id="tab-notices" class="tab-content">
@@ -269,13 +269,13 @@
     function renderStudents() {
       var tbody = document.getElementById('studentTable');
       if (students.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">暂无报名学员</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无报名学员</td></tr>';
         return;
       }
       var html = '';
       for (var i = 0; i < students.length; i++) {
         var s = students[i];
-        html += '<tr><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.phone) + '</td><td>' + formatDate(s.created_at) + '</td><td><button class="btn-sm btn-danger" onclick="deleteStudent(\'' + s.id + '\')">删除</button></td></tr>';
+        html += '<tr><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.phone) + '</td><td>' + escapeHtml(s.identity || '-') + '</td><td>' + escapeHtml(s.id_card || '-') + '</td><td>' + formatDate(s.created_at) + '</td><td><button class="btn-sm btn-danger" onclick="deleteStudent(\'' + s.id + '\')">删除</button></td></tr>';
       }
       tbody.innerHTML = html;
     }
