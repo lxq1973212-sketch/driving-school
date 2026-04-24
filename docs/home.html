@@ -34,8 +34,8 @@
     
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; color: #666; font-size: 0.9rem; margin-bottom: 6px; }
-    .form-group input { width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem; transition: border-color 0.2s; }
-    .form-group input:focus { outline: none; border-color: #2ecc71; }
+    .form-group input, .form-group select { width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem; transition: border-color 0.2s; background: white; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #2ecc71; }
     
     .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 500; cursor: pointer; transition: transform 0.2s; }
     .submit-btn:hover { transform: translateY(-2px); }
@@ -102,7 +102,7 @@
     </div>
     
     <div class="share-card" onclick="openShareModal()">
-      <div class="share-icon">📢</div>
+      <div class="share-icon"></div>
       <div class="share-title">分享给好友</div>
       <div class="share-desc">让更多人了解双安驾校</div>
     </div>
@@ -119,6 +119,20 @@
         <div class="form-group">
           <label>手机号码</label>
           <input type="tel" id="phoneInput" placeholder="请输入手机号码" required pattern="1[3-9]\d{9}" maxlength="11">
+        </div>
+        <div class="form-group">
+          <label>学员身份</label>
+          <select id="identityInput" required>
+            <option value="">请选择学员身份</option>
+            <option value="教师">教师</option>
+            <option value="医护人员">医护人员</option>
+            <option value="警官">警官</option>
+            <option value="军人">军人</option>
+            <option value="内江职院学生">内江职院学生</option>
+            <option value="内江师院学生">内江师院学生</option>
+            <option value="内江卫健院学生">内江卫健院学生</option>
+            <option value="一般成年人">一般成年人</option>
+          </select>
         </div>
         <div class="form-group">
           <label>身份证号码后6位</label>
@@ -142,7 +156,7 @@
     
     <div class="info-card" id="infoCard" style="display:none">
       <div class="info-row">
-        <span class="info-icon">📍</span>
+        <span class="info-icon"></span>
         <div class="info-content">
           <div class="info-label">机构地址</div>
           <div class="info-value" id="addressValue">-</div>
@@ -153,7 +167,7 @@
   
   <div class="success-modal" id="successModal">
     <div class="success-content">
-      <div class="success-icon">🎉</div>
+      <div class="success-icon"></div>
       <div class="success-title">报名成功！</div>
       <div class="success-text">感谢您的报名，我们的工作人员将在24小时内与您联系</div>
       <button class="submit-btn" onclick="closeSuccessModal()">知道了</button>
@@ -165,7 +179,7 @@
       <div class="share-modal-title">复制链接分享</div>
       <div class="share-platforms">
         <div class="share-platform" onclick="copyLink()" style="grid-column: 1 / -1;">
-          <div class="share-platform-icon">🔗</div>
+          <div class="share-platform-icon"></div>
           <div class="share-platform-name">复制链接</div>
         </div>
       </div>
@@ -209,8 +223,8 @@
       try {
         const [schoolRes, noticesRes, modulesRes] = await Promise.all([
           apiFetch('school?select=*&limit=1'),
-          apiFetch('notices?select=*&order=date.desc'),
-          apiFetch('modules?select=*')
+           apiFetch('notices?select=*&order=date.desc'),
+          apiFetch('modules?select=*&order=created_at.desc')
         ]);
         
         schoolData = schoolRes[0] || { name: '双安驾校' };
@@ -328,22 +342,22 @@
       if (modules.length === 0) {
         grid.innerHTML = `
           <div class="module-item" onclick="goModule('subject2')">
-            <div class="module-icon">🚗</div>
+            <div class="module-icon"></div>
             <div class="module-name">科目二</div>
             <div class="module-count">考试技巧</div>
           </div>
           <div class="module-item" onclick="goModule('subject3')">
-            <div class="module-icon">🛣️</div>
+            <div class="module-icon"></div>
             <div class="module-name">科目三</div>
             <div class="module-count">路考要点</div>
           </div>
           <div class="module-item orange" onclick="goModule('video')">
-            <div class="module-icon">🎬</div>
+            <div class="module-icon"></div>
             <div class="module-name">免费影视</div>
             <div class="module-count">海量资源</div>
           </div>
           <div class="module-item purple" onclick="goModule('music')">
-            <div class="module-icon">🎵</div>
+            <div class="module-icon"></div>
             <div class="module-name">免费音乐</div>
             <div class="module-count">无损音质</div>
           </div>
@@ -373,6 +387,7 @@
       
       const name = document.getElementById('nameInput').value.trim();
       const phone = document.getElementById('phoneInput').value.trim();
+      const identity = document.getElementById('identityInput').value.trim();
       const idCard = document.getElementById('idCardInput').value.trim();
       
       const btn = document.getElementById('submitBtn');
@@ -385,6 +400,7 @@
           body: JSON.stringify({
             name,
             phone,
+            identity: identity,
             id_card: idCard,
             gender: '未知',
             status: 'pending',
